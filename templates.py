@@ -12,10 +12,10 @@ from string import Template
 #
 # The value that the key gets us is then inserted into the string.
 
-template_string = 'Dear $designator $first_name $last_name,
+template_string = '''Dear $designator $first_name $last_name,
 This is spam. Sorry.
 Regards,
-Spam, Inc.'
+Spam, Inc.'''
 values = dict(designator='Mr.',first_name='Michael',last_name='Jackson')
 
 template = Template(template_string)
