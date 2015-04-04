@@ -13,5 +13,5 @@ template_string = 'Dear $designator $first_name $last_name,\nThis is spam. Sorry
 values = dict(designator='Mr.',first_name='Michael',last_name='Jackson')
 
 template = Template(template_string)
-template.safe_substitute(values)
-template.substitute(values)
+print template.safe_substitute(values)
+print template.substitute(values)
