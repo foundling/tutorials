@@ -1,0 +1,13 @@
+" move to ~/.vimrc 
+
+"filetype indent plugin on
+"syntax on
+"colorscheme PaperColor
+
+"set tabstop=4 expandtab shiftwidth=4 softtabstop=4
+"set statusline=%t\ line:[%l]
+"set laststatus=2
+ 
+"inoremap ZZ wq
+"inoremap jk <ESC>
+
