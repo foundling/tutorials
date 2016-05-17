@@ -1,1 +1,1 @@
-A repository of tutorials in node/javascript, Python and Linux.
+A repository of Javascript, Python and Linux tutorials.
