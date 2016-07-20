@@ -1,18 +1,22 @@
-<input can-blur="addPerson"/>
+<input id="name-input"/>
+<button can-click="add" can-enter="add">Add</button>
+
 <h1>Count: {{count}} </h1>
 
 <table>
     <thead>
         <tr>
             <th>Name</th>
-            <th>Length</th>
+            <th class="phone-number"></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
     {{#each people}}
         <tr>
-            <td>{{name}}</td>
-            <td>{{charCount .}}</td>
+            <td>{{ name }}</td>
+            <td>{{#if ext}}{{ext}}{{else}}<input can-value="ext"/>{{/if}}</td>
+            <td class="remove-person" can-click="remove"></td>
         </tr>
     {{/each}}
     </tbody>

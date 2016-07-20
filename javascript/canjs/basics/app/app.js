@@ -2,29 +2,33 @@ steal(
     'can',
     './app.stache',
     './models/people.js',
+    './app.less!',
     function(can, appTemplate, people) {
 
         var count = can.compute(function() {
             return people.attr('length');
         });
 
-        var template = appTemplate({ 
+        var compiledTemplate = appTemplate({ 
             people: people, 
             charCount: function(person) {
                 return person.name.length;
             },
             count: count,
-            addPerson: function(vm, element, event) {
-                var name = element.val().trim(); 
-                var people = vm.people;
+            add: function(vm, el, ev) {
+                var nameInput = $('#name-input'); 
+                var name = nameInput.val().trim(); 
                 if (name) {
                     people.push({name: name});
-                    element.val('');
+                    nameInput.val('');
                 }
+            },
+            remove: function(person, el, ev) {
+                var index = this.people.indexOf(person);
+                this.people.splice(index,1);
             }
         });
 
-        $('#app').append(template);
-
+        $('#app').append(compiledTemplate);
     }
 );
