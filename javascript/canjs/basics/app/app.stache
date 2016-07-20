@@ -1,3 +1,20 @@
-<h1>Hello, {{ name }}!</h1>
-<h2 can-click="swap">You are the {{ role }}.</h2>
+<input can-blur="addPerson"/>
+<h1>Count: {{count}} </h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Length</th>
+        </tr>
+    </thead>
+    <tbody>
+    {{#each people}}
+        <tr>
+            <td>{{name}}</td>
+            <td>{{charCount .}}</td>
+        </tr>
+    {{/each}}
+    </tbody>
+</table>
 

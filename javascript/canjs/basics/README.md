@@ -12,7 +12,7 @@ We're using a module loader instead of a series of script tags in our html becau
 
 The Demo Application:
 
-The demo app will pretty simple at first, just demonstrating the interaction among a `.stache` template, the associated `viewModel` data, as well as the way that assets are loaded via StealJS. The demo app will show a list of names and their character counts, as well as provide an input field to add new names. 
+The demo app will pretty simple at first, just demonstrating the interaction among StealJS, dependencies, stache templates and view models. The demo app will show a list of names and their character counts, as well as provide an input field to add new names. 
 
 ### 1. App Setup 
 

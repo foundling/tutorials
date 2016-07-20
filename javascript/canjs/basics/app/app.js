@@ -1,22 +1,30 @@
 steal(
     'can',
     './app.stache',
-    function(can, appTemplate) {
+    './models/people.js',
+    function(can, appTemplate, people) {
 
-        var vm = new can.Map({
-
-            name: 'Bryn',
-            role: 'Top Dawg',
-            altRole: 'CEO',
-            swap: function() {
-                var tmp = this.attr('altRole');
-                this.attr('altRole', this.attr('role'));
-                this.attr('role', tmp);
-            }
-
+        var count = can.compute(function() {
+            return people.attr('length');
         });
 
-        var compiledTemplate  = appTemplate(vm); 
-        $('#app').append(compiledTemplate);
+        var template = appTemplate({ 
+            people: people, 
+            charCount: function(person) {
+                return person.name.length;
+            },
+            count: count,
+            addPerson: function(vm, element, event) {
+                var name = element.val().trim(); 
+                var people = vm.people;
+                if (name) {
+                    people.push({name: name});
+                    element.val('');
+                }
+            }
+        });
+
+        $('#app').append(template);
+
     }
 );
