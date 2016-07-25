@@ -1,0 +1,21 @@
+{
+  "name": "tti_can",
+  "version": "1.0.0",
+  "description": "a demo can application",
+  "main": "app/app",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Alex",
+  "license": "MIT",
+  "dependencies": {
+    "can": "^2.3.24",
+    "steal": "^0.16.27",
+    "steal-tools": "^0.16.5"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "http-server": "^0.9.0",
+    "mocha": "^2.5.3"
+  }
+}

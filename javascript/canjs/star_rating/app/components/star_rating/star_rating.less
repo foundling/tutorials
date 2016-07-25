@@ -1,0 +1,20 @@
+ul {
+
+    list-style-type: none;
+
+    li {
+        display: inline;
+        font-size: 2em;
+        /* remove gap to prevent flicker when moving from one star to another */
+        margin-left: -4px; 
+        padding: 5px;
+    }
+
+    li.full:before {
+        content: '★'
+    }
+
+    li.empty:before {
+        content: '☆';
+    }
+}

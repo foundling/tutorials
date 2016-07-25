@@ -1,0 +1,10 @@
+<ul>
+    {{#each stars}}
+        <li 
+            can-mouseenter="beginRating ." 
+            can-mouseleave="clearRating ." 
+            can-click="commitRating" 
+            class="{{#selected}}full{{else}}empty{{/selected}}"></li>
+    {{/each}}
+    <li>{{ rating }}</li>
+</ul>
