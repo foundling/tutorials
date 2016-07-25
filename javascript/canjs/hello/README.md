@@ -157,11 +157,11 @@ steal(
 #### Things to note about StealJS paths 
 
 + Even if you installed a node module and it's in the `node_modules` directory, you will still get an error from `steal` if it's not listed in your `package.json` file as well.  This is because StealJS uses this file to specifically resolve dependencies in your `node_modules` directory. This is why it's important to run `npm init` before you start installing anything, so that those dependencies are included and steal knows about them.
-+ node modules are specified by name, not as file paths 
-+ paths that start with './' are relative to the directory of the file you're working in
-+ paths that do not start with './' are relative to the directory containing your applications entry point according to the package.json's 'main' entrypoint value
-+ stache and less/css files should be suffixed with a '!'
-+ stache files require a namespace in the steal callback in order to be used, but less/css files take effect whether you give them a namespace or not (and, in fact, you can't access the less/css file's contents this way).
++ Node modules are specified by name, not as file paths 
++ Paths that start with './' are relative to the directory of the file you're working in
++ Paths that do not start with './' are relative to the directory containing your application's `package.json` file
++ non-JavaScript files should be suffixed with a '!'
++ Stache files require a namespace in the steal callback in order to be used, but less/css files take effect whether you give them a namespace or not (and, in fact, you can't access the less/css file's contents this way).
 
 
 #### The Demo Application
