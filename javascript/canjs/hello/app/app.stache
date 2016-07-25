@@ -1,0 +1,1 @@
+<p>Hey <span>{{ name }}</span>, you are <span can-click="swap">{{ description }}</span>!</p>
