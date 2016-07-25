@@ -1,0 +1,12 @@
+<ul>
+    {{#each books}}
+    <li>
+        <img src="{{ cover_path }}" />
+
+        {{#each formats}}
+        <li class="format-type"></li>
+        {{/li}}
+
+    </li>
+    {{/each}}
+</ul>

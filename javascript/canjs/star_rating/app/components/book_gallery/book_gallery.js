@@ -2,14 +2,13 @@ steal(
 
     'can',
     'can/view/stache/stache.js',
-    'app/components/star_rating/star_rating.stache!',
-    'app/components/star_rating/star_rating.less!',
-
+    'app/components/star_rating/book_gallery.stache!',
+    'app/components/star_rating/book_gallery.less!',
 
     function(
 
         can, stache,
-        starRatingTemplate
+        bookGalleryTemplate
 
     ) {
         can.Component.extend({
