@@ -15,7 +15,7 @@
     {{#each people}}
         <tr>
             <td>{{ name }}</td>
-            <td>{{#if ext}}{{ext}}{{else}}<input can-value="ext"/>{{/if}}</td>
+            <td can-click="convertToInput .">{{#if ext}}{{ext}}{{else}}<input can-value="ext"/>{{/if}}</td>
             <td class="remove-person" can-click="remove"></td>
         </tr>
     {{/each}}

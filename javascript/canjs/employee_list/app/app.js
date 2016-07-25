@@ -11,9 +11,6 @@ steal(
 
         var compiledTemplate = appTemplate({ 
             people: people, 
-            charCount: function(person) {
-                return person.name.length;
-            },
             count: count,
             add: function(vm, el, ev) {
                 var nameInput = $('#name-input'); 
@@ -26,6 +23,9 @@ steal(
             remove: function(person, el, ev) {
                 var index = this.people.indexOf(person);
                 this.people.splice(index,1);
+            },
+            convertToInput: function(person) {
+                person.attr('ext', null);
             }
         });
 

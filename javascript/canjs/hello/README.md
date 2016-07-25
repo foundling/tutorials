@@ -22,7 +22,7 @@ Why are we using a module loader instead of script tags for our code?
 
 ### The Demo Application
 
-In terms of functionality, the demo app will be very simple: it merely demonstrates how to use `can-EVENT` attribute on an HTML element to manipulate it from your JavaScript code. Subsequent tutorials will explore the power of Can's data structures in more depth.
+In terms of functionality, the demo app will be very simple: it merely demonstrates how to use the `can-EVENT` attribute on an HTML element to manipulate it from your JavaScript code. Subsequent tutorials will explore the power of Can's data structures in more depth.
 
  The emphasis here is much more on StealJS and the central role of the `package.json` file when building an app with StealJS. I'll also cover the asynchronous structure of the steal function as well as the syntax for importing various types of modules.
 
@@ -63,7 +63,7 @@ We will manually create everything except for the  `node_modules` directory and 
 
 #### :: Initialize your app as a package :: 
 
-It's important to create a `package.json` file **before** you start installing node modules, and to use the --save and --save-dev flags, so that your installations are recorded in the package. StealJS relies on this file to locate your application entry point and its node module dependencies. 
+It's important to create a `package.json` file **before** you start installing node modules, and to use the --save and --save-dev flags, so that your installations are recorded in the `package.json` file. StealJS relies on this file to locate your application entry point and its node module dependencies. 
 
 We can create a `package.json` file with this command:
 
