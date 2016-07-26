@@ -4,6 +4,6 @@
             can-mouseenter="beginRating ." 
             can-mouseleave="clearRating ." 
             can-click="commitRating" 
-            class="{{#selected}}full{{else}}empty{{/selected}}"></li>
+            class="star {{#selected}}full{{else}}empty{{/selected}}"></li>
     {{/each}}
 </ul>

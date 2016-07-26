@@ -1,5 +1,3 @@
 {{#each books}}
-<prod-book 
-    view-model="{.}"
-/>
+<prod-book view-model={.} />
 {{/each}}

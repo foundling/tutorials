@@ -2,51 +2,55 @@ steal(
 
     'can',
     'can/view/stache/stache.js',
+    'can/map/define/define.js',
+
     'app/components/star_rating/star_rating.stache!',
     'app/components/star_rating/star_rating.less!',
 
-
     function(
 
-        can, stache,
+        can, stache, define,
         starRatingTemplate
 
     ) {
-        can.Component.extend({
+        return can.Component.extend({
             tag: 'star-rating',
-            template: starRatingTemplate,
+            template: can.view('app/components/star_rating/star_rating.stache'),
             viewModel: {
-                rated: false,
-                rating: can.compute(function() {
-                   
-                    return can.filter(this.stars, function(star) {
-                        return star.attr('selected');
-                    }).length;
+                define: {
+                    rated: {
+                        value: false
+                    },
+                    stars: {
+                        value: function() {
+                            return new can.List([
 
-                }),
-                stars: new can.List([
+                                { selected: false },
+                                { selected: false },
+                                { selected: false },
+                                { selected: false },
+                                { selected: false }
 
-                    { selected: false },
-                    { selected: false },
-                    { selected: false },
-                    { selected: false },
-                    { selected: false }
+                            ]);
+                        }
+                    },
 
-                ]),
+                },
                 beginRating: function(star) {
-                    if (this.rated) {
+                    if (this.attr('rated')) {
                         return;
                     }
-                    var index = this.stars.indexOf(star);
+                    var index = this.attr('stars').indexOf(star);
                     for (var i = 0; i <= index; ++i) {
-                        this.stars.attr(i + '.selected', true); 
+                        this.attr('stars.' + i + '.selected', true); 
                     }
                 },
                 commitRating: function() {
-                    this.rated = !this.rated;
+                    console.log(this);
+                    this.attr('rated', !this.attr('rated'));
                 },
                 clearRating: function() {
-                    if (this.rated) {
+                    if (this.attr('rated')) {
                         return;
                     }
                     can.each(this.stars, function(star) {
@@ -55,7 +59,10 @@ steal(
                 },
             },
             events: {
+                'inserted': function(){
+                    console.log(this);
+                }
             }
-        });        
+        }); 
     }
 );
