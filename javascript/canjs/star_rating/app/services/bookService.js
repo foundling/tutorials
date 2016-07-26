@@ -1,12 +1,16 @@
 steal(
 
     'can',
-    'can/util/fixture/fixture.js',
+    'can/util/fixture',
     'app/models/books.js',
 
-    function( can, fixture, books ) {
+    function(
+        can, fixture, 
+        books
+    ) {
 
-        return can.fixture('/books', function() {
+        can.fixture.delay = 1000;
+        return can.fixture('GET /books', function() {
             return books; 
         });
         

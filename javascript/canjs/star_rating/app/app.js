@@ -2,19 +2,26 @@ steal(
 
     'can',
     'can/view/stache/stache.js',
-    'app/models/books.js',
+
+    'app/app.stache!',
+
+    'app/services/bookService.js',
+    'app/components/book',
     'app/components/star_rating/star_rating.js',
+
     function(
-        can, 
-        stache,
-        bookModel, 
-        starRating // can.Components are automatically instantiated upon reference
+        can, stache,
+        appTemplate,
+        bookService, book, starRating // instantiated upon reference 
     ) {
 
-        var starRatingTag = '<star-rating></star-rating>';
-        var compiled = can.stache(starRatingTag);
-        $('#app').append(compiled);
-        
+        $.get('/books', function(books) {
+            var compiled = appTemplate({
+                books: books
+            });
+            $('#app').append(compiled);
+        }); 
+
     }
 
 );

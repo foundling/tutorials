@@ -1,0 +1,8 @@
+{{#each books}}
+<prod-book 
+    title="{title}" 
+    author="{author}"
+    ISBN="{ISBN}"
+    cover_url="{cover_url}"
+/>
+{{/each}}
