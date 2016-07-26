@@ -15,17 +15,11 @@ steal(
         can.Component.extend({
             tag: 'prod-book',
             template: bookTemplate,
-            viewModel: {
-                title: null,
-                author: {
-                    firstName: null,
-                    lastName: null,
-                    middleName: null,
-                },
-                ISBN: null,
-                cover_url: null
-            },
+            viewModel: null,
             events: {
+                '{window} click': function() {
+                    console.log(this.viewModel);
+                }
             }
         });        
     }

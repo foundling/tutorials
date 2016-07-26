@@ -9,7 +9,6 @@ steal(
         books
     ) {
 
-        can.fixture.delay = 1000;
         return can.fixture('GET /books', function() {
             return books; 
         });

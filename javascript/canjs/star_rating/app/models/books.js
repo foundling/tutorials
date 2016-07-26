@@ -22,7 +22,7 @@ steal(
                     lastName: 'Skiena'
                 },
                 cover_url: 'https://images-na.ssl-images-amazon.com/images/I/51pINwAeu5L._SX357_BO1,204,203,200_.jpg',
-                ISBN: '1848000693'
+                ISBN: '1848000693',
             },
             {
                 title: 'Perl 6 Essential',

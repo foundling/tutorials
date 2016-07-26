@@ -6,5 +6,4 @@
             can-click="commitRating" 
             class="{{#selected}}full{{else}}empty{{/selected}}"></li>
     {{/each}}
-    <li>{{ rating }}</li>
 </ul>
