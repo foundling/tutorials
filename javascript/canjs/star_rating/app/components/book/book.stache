@@ -1,6 +1,8 @@
 <div class="book">
+    {{ log }}
+
     <h1>{{ title }}</h1>
     <h1>by {{ author.firstName }} {{ author.lastName }}</h1>
     <img src="{{cover_url}}" />
-    <star-rating {^rating}="viewModel.rating" />
+    <content />
 </div>

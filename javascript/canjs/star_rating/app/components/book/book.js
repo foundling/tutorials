@@ -17,7 +17,7 @@ steal(
             template: bookTemplate,
             viewModel: null,
             events: {
-                '{window} click': function() {
+                'img click': function(el, ev) {
                     console.log(this.viewModel);
                 }
             }

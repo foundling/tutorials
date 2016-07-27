@@ -1,3 +1,7 @@
 {{#each books}}
-<prod-book view-model={.} />
+<prod-book view-model="{.}">
+  <star-rating {^rating}="viewModel.rating"/>
+</prod-book>
 {{/each}}
+
+

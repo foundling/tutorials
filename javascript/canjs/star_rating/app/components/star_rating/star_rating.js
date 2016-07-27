@@ -36,6 +36,11 @@ steal(
                     },
 
                 },
+                rating: can.compute(function() {
+                    return can.filter(this.attr('stars'), function(star) {
+                        return star.attr('selected');
+                    }).length;
+                }),
                 beginRating: function(star) {
                     if (this.attr('rated')) {
                         return;
@@ -46,7 +51,6 @@ steal(
                     }
                 },
                 commitRating: function() {
-                    console.log(this);
                     this.attr('rated', !this.attr('rated'));
                 },
                 clearRating: function() {
@@ -60,7 +64,6 @@ steal(
             },
             events: {
                 'inserted': function(){
-                    console.log(this);
                 }
             }
         }); 
