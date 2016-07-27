@@ -3,16 +3,18 @@ steal(
     'can',
     'can/view/stache/stache.js',
 
-    'app/app.stache!',
 
     'app/services/book_service.js',
     'app/components/book',
     'app/components/star_rating/star_rating.js',
 
+    'app/app.stache!',
+    'app/app.less!',
+
     function(
         can, stache,
-        appTemplate,
-        bookService, book, starRating // instantiated upon reference 
+        bookService, book, starRating, // instantiated upon reference 
+        appTemplate
     ) {
 
         $.get('/books', function(books) {

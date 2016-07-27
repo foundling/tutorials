@@ -4,7 +4,7 @@
 
 The goals of this tutorial are:
 
-+ Build two CanJS Components: a book component and a star-rating component
++ Build a book gallery out of CanJS Components
 + Relate them in a way that they can share specific data but stay relatively independent of one another
 + Mock external API calls to retrieve product data via `can.fixture`
 
@@ -51,30 +51,23 @@ book_gallery/
 ````
 # Why Components ?
 
-A component has a layer of abstraction around the implementation of its functionality. You use it through a distinct interface or api. If code having to know about other code is a problem, then a component is one solution because you can think about it, work on it, update it, etc., in a fair degree of isolation because it tries to depend on very little.
+A component has a layer of abstraction around the implementation of its functionality which takes the form of an interface or API. If code having to know about other code is a problem in software development, then a component is one solution because when you conceive of code as components, you can think about it, work on it, develop it, etc., in a fair degree of isolation because it tries to depend on very little.
 
-In CanJS, you can implement components with `can.Component.extend` and compose them with HTML. 
+In CanJS, you can implement components with `can.Component.extend` and compose them with custom HTML tags. 
 
 Let's get started!
 
-<br>
-
 ### Component Syntax
 
-In the HTML markup, a CanJS component looks like an ordinary HTML tag:
+In the HTML markup, a CanJS component looks like an ordinary HTML tag, except that it is hyphenated to distinguish itself from built-in HTML elements. For more information, see the 'Core Concepts' section in the [W3C Custom Elements spec](https://www.w3.org/TR/custom-elements/). 
 
 ````
 <my-component></my-component>
 ````
 
-
-It is considered a best practice to hyphenate your custom HTML elements' tag names, as this distinguishes them from native HTML elements and out of the way of the initial parser. See the 'Core Concepts' section in the [W3C Custom Elements spec](https://www.w3.org/TR/custom-elements/).  
-
-<br>
-
 ### Visualizing the Markup
 
-Let's visualize what our markup will look like. We want to loop through a list of book objects, rendering the book as well as its star rating. The goal is for the star rating to have a very loose relation to the book: it sends only one piece of information to the book, the rating. 
+Let's visualize what our markup will look like. We want to loop through a list of book objects, rendering the book as well as its star rating. The goal is for the star rating to be contained within the book, but have a very loose relation to it, sending just one piece of information to the book: the rating. 
 
 We can start like this.  
 
@@ -86,9 +79,14 @@ We can start like this.
 {{#each-book}}
 ````
 
-The nesting ensures that the `star-rating` component can be treated as a child component of `product-book`. There are a few things we need to add in order to send that one piece of information, the rating, to the parent book. But first, let's build the our first component, the book component.
+The nesting of `star-rating` does two things:
 
-### Building the Book Component
++ It includes the markup of the `star-rating` within the `product-book` markup
++ It ensures that the `star-rating` component can be treated as a child component of `product-book`. 
+
+There are a few things we need to add in order to send the `star-rating`'s rating value to the `product-book`. But first, let's build our first component, the book component.
+
+# Building the Book Component
 
 We'll do this by pulling in `can`, calling `can.Component.extend` and passing in an object literal that has four top-level properties, `tag`, `template`, `viewModel`, `events`. Only the first two are strictly necessary to instantiate a component, but lets leave the `viewModel` and `events` properties in for completeness.
 
@@ -101,20 +99,17 @@ steal(
         can.Component.extend({
             tag: 'product-book',                 
             template: null,
-            viewModel: {
-            },
-            events: {
-            }
-
+            viewModel: {},
+            events: {}
         }); 
     }
 )
 ````
 
-Can components are created differently than controls: they are instantiated as soon as you pull them into your code. This means that we'll be `steal`'ing this component into our main `app.js` file, but not doing anything with it beyond alotting it a namespace in `steal`'s callback.
+Can components are created differently than controls: they are only created by `extending` them, and they are instantiated as soon as you pull them into your code. This means that we'll be `steal`'ing this component into our main `app.js` file, but not doing anything with it beyond alotting it a namespace in `steal`'s callback.
 
 Above, I left the `template` property `null`, but let's work with that now. As we've done before, we're going to reference a `stache` file that has the markup for our book component. We'll call it `bookTemplate` in the `steal` callback function and bind it to our `template` property as such. 
-One final thing before we work on pulling this into our `app.js` file. Components have a few special events that fire at specific times and a useful event we could use in exploring components for the first time is the `inserted` event, which fires once the component is inserted into the `DOM`. Let's simply log 'book inserted' at that point. 
+One final thing before we work on pulling this into our `app.js` file. Components have a few special events that fire at specific times. A useful event we could use in exploring components for the first time is the `inserted` event, which fires once the component is inserted into the `DOM`. Let's simply log 'book inserted' at that point. 
 
 ````javascript
 steal(
@@ -156,11 +151,11 @@ steal(
 )
 ````
 
-At this point, we need to get ahold of some book data and send it into `appTemplate`. We can do that without setting up a server by registering a rest call for `can.fixture` to intercept.
+At this point, we need to get ahold of some book data and send it into `appTemplate`. We can do that with mock data by registering a REST call with `can.fixture` to intercept.
 
-### Mocking API calls with can.fixture
+# Mocking API calls with can.fixture
 
-A `can.fixture` intercepts your ajax calls there. I'm going to open `book_gallery/app/services/book_service.js` and define a `can.fixture`. Note, it's a plugin so I'm going to explicitly include it.  
+Registering a `can.fixture` to the path `GET /books` will intercept any AJAX call we make to `/books`. I'm going to open `book_gallery/app/services/book_service.js` and define a `can.fixture`. Note, it's a plugin so I'm going to explicitly include it.  
 ````javascript
 steal(
     'can',
@@ -171,11 +166,11 @@ steal(
         books
     ){
         can.fixture('GET /books', function() {
-            return books;  // a closure, coming from imported books
+            return books;  // a closure, coming from books imported above
         });
     });
 ````
-and then use it in my `app.js` file like this:
+and then I just need to pull it into my `app.js` file to activate it:
 
 ````javascript
 steal(
@@ -185,9 +180,7 @@ steal(
     'app/components/book/book.js',
     function(
         can,
-        appTemplate,
-        bookService,
-        book
+        appTemplate, bookService, book
     ) {
         $.get('/books').then(function(books) {
 
@@ -199,9 +192,30 @@ steal(
 )
 ````
 
-All you need to do is call `can.fixture` or pull in a module that calls it to intercept get requests globally.
+### Our Books Data
 
-### Building the Star Rating Component
+Before moving on, let's quickly glance at the structure of our mock books data. This is a pretty pared-down model for book metadata, but it's good enough for the purpose of this tutorial. 
+
+````javascript
+{
+    title: 'Structure and Interpretation of Computer Programs',
+    author: {
+        firstName: 'Gerald',
+        middleName: 'Jay',
+        lastName: 'Sussman'
+    },
+    cover_url: 'http://pictures.abebooks.com/isbn/9780070004849-us.jpg',
+    ISBN: '0262510871',
+},
+````
+
+# Building the Star Rating Component
+
+The star rating component behaves in the following way:
+
++ When you hover over a star, the stars from that star all the way to the left turn black.
++ When you click on a star, the state of the star rating freezes.
++ When you click on any star in the freezed state, it unfreezes the state.
 
 First, the template:
 
@@ -216,12 +230,13 @@ First, the template:
     {{/each}}
 </ul>
 ````
+Some comments on this:
 
-So we have a list of stars that get rendered (these are unicode stars in the `stars.less` file), and attached to each star there is some state toggling going on via the `can-mouseenter`, `can-mouseleave` and `can-click` attributes of the `<li>` element. Some of these event handlers are being called with the argument '`.`', which stands for the current object in the `stars` iteration. 
+We have a list of star `<li>`'s that get rendered. The actual stars are unicode characters contained in the `star_rating.less` file's `.full` and `.empty` classes, which allows us to programmatically toggle a star's appearance by changing the value of `selected`. 
 
-So how does that hook into the JavaScript? These `can-EVENT` handler attributes modify the state of the stars array in the following component definition.
+Attached to each star are a few CanJS-specific event handlers that let us toggle the UI state of each star: `can-mouseenter`, `can-mouseleave` and `can-click`. Some of these event handlers are given the argument '`.`', which represents the current star in the `stars` `{{#each}}` loop. 
 
-It's a simplified version of what we're about to do (and there is one major bug in here regarding scope that we'll soon fix). We're creating a new observable list of star states and binding it to the `stars` property in the `viewModel`. 
+So how does that hook into the JavaScript? The keynames for these event-handler attributes are event callbacks found within our component code. Here's a simplified version of what we're about to do (and there is one major bug in here regarding scope that we'll soon fix). We're creating a new observable list of star states and binding it to the `stars` property in the `viewModel`. 
 
 ````javascript
         return can.Component.extend({
@@ -232,11 +247,11 @@ It's a simplified version of what we're about to do (and there is one major bug 
                     value: false
                 },
                 stars: new can.List([
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
+                    {selected: false},
+                    {selected: false},
+                    {selected: false},
+                    {selected: false},
+                    {selected: false}
                 ]),
                 rating: can.compute(function() {
                     // code that always returns the current rating 
@@ -254,10 +269,39 @@ It's a simplified version of what we're about to do (and there is one major bug 
         });
 ````
 
-If you glance at the template again, you'll see this in the `star` class:
+# The Update Cycle
+
+Let's review the `view` -> `viewModel` -> `view` update cycle that occurs when we interact with the stars. As we saw before, this is in the class declaration at the bottom of each star `<li>` element.
 
 ````html
-    {{#selected}}full{{else}}empty{{/selected}}
+{{#selected}}full{{else}}empty{{/selected}}
 ````
 
-Initially, this stache template will render CSS classes of `empty` for all stars because their corresponding observable list valaues are all set to `false`. When I hover over a star, the `beginRating` event handler fires and sets the stars less than or equal in index of my mouse's target star to true, which *then* triggers a change in the view as the `{{#selected}}full{{else}}empty{{/selected}}` conditional is re-evaluated and renders a CSS class of `full`.
+Initially, this stache template will render classes of `empty` for all stars because their corresponding observable `selected` properties are all set to `false`. 
+
+````javascript
+stars: new can.List([
+    {selected: false},
+    {selected: false},
+    {selected: false},
+    {selected: false},
+    {selected: false}
+])
+
+````
+
+When I hover over a star, let's say the third star from the right, the `beginRating` event handler fires and sets the stars less than or equal in index of my mouse's target star to `true`.
+
+````javascript
+stars: new can.List([
+    {selected: true},
+    {selected: true},
+    {selected: true},
+    {selected: false},
+    {selected: false}
+]),
+
+````
+This forces the view to update and the `{{#selected}}full{{else}}empty{{/selected}}` conditional is re-evaluated. The result is that list elements 1, 2 and 3 now have a class `full`, so their unicode star ☆ is replaced with ★.
+
+

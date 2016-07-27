@@ -1,7 +1,7 @@
-{{#each books}}
-<prod-book view-model="{.}">
-  <star-rating {^rating}="viewModel.rating"/>
-</prod-book>
-{{/each}}
-
-
+<div class="gallery">
+    {{#each books}}
+    <prod-book view-model="{.}">
+      <star-rating {^rating}="viewModel.rating"/>
+    </prod-book>
+    {{/each}}
+</div>
