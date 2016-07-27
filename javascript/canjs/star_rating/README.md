@@ -5,7 +5,7 @@
 The goals of this tutorial are:
 
 + Build two CanJS Components: a book component and a star-rating component
-+ Wire them together so that they can share some data in a decoupled manner
++ Relate them in a way that they can share specific data but stay relatively independent of one another
 + Mock external API calls to retrieve product data via `can.fixture`
 
 # Project Layout
@@ -74,7 +74,9 @@ It is considered a best practice to hyphenate your custom HTML elements' tag nam
 
 ### Visualizing the Markup
 
-Let's visualize what our markup will look like. We want to loop through a list of book objects and show the book as well as its child star rating component. We can start like this.  The nesting ensures that the `star-rating` component is a child component of `product-book`.
+Let's visualize what our markup will look like. We want to loop through a list of book objects, rendering the book as well as its star rating. The goal is for the star rating to have a very loose relation to the book: it sends only one piece of information to the book, the rating. 
+
+We can start like this.  
 
 ````html
 {{#each books}} 
@@ -84,10 +86,11 @@ Let's visualize what our markup will look like. We want to loop through a list o
 {{#each-book}}
 ````
 
+The nesting ensures that the `star-rating` component can be treated as a child component of `product-book`. There are a few things we need to add in order to send that one piece of information, the rating, to the parent book. But first, let's build the our first component, the book component.
 
 ### Building the Book Component
 
-Now, let's build out the `book` component in JavaScript. We'll do this by pulling in `can`, calling `can.Component.extend` and passing in an object literal that has four top-level properties, `tag`, `template`, `viewModel`, `events`. Only the first two are strictly necessary to instantiate a component, but lets leave the `viewModel` and `events` properties in for completeness.
+We'll do this by pulling in `can`, calling `can.Component.extend` and passing in an object literal that has four top-level properties, `tag`, `template`, `viewModel`, `events`. Only the first two are strictly necessary to instantiate a component, but lets leave the `viewModel` and `events` properties in for completeness.
 
 Open `book_gallery/app/components/book/book.js` and add the following code:
 
@@ -147,13 +150,13 @@ steal(
         appTemplate,
         book
     ) {
-        var compiledTemplate = appTemplate(/* pass view model in here */);
+        var compiledTemplate = appTemplate(/* something important goes here */);
         $('#app').append(compiledTemplate);
     }
 )
 ````
 
-At this point, we need to get ahold of some book data, since we're not passing any data into the template renderer function.
+At this point, we need to get ahold of some book data and send it into `appTemplate`. We can do that without setting up a server by registering a rest call for `can.fixture` to intercept.
 
 ### Mocking API calls with can.fixture
 
