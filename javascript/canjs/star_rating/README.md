@@ -53,9 +53,13 @@ book_gallery/
 
 A component has a layer of abstraction around the implementation of its functionality. You use it through a distinct interface or api. If code having to know about other code is a problem, then a component is one solution because you can work it, think about it, update it, re-design it, etc.  in relative isolation, for the very reason that it doesn't depend on anything else. 
 
-In CanJS, they provide a more markup-centric service, allowing you to compose widgets with HTML. 
+In CanJS, you compose widgets with HTML. 
 
 Let's get started!
+
+<br>
+
+### Component Syntax
 
 In the HTML markup, a CanJS component looks like an ordinary HTML tag:
 
@@ -63,9 +67,14 @@ In the HTML markup, a CanJS component looks like an ordinary HTML tag:
 <my-component></my-component>
 ````
 
-It is considered a best practice to hyphenate your custom HTML elements' tag names, as this distinguishes them from native HTML elements. For more on this, see the 'Core Concepts' section in the [W3C Custom Elements spec](https://www.w3.org/TR/custom-elements/).  
 
-Let's visualize what our markup will look like. We want to loop through a list of book objects and show the book as well as its child star rating component. We can start like this:
+It is considered a best practice to hyphenate your custom HTML elements' tag names, as this distinguishes them from native HTML elements and out of the way of the initial parser. See the 'Core Concepts' section in the [W3C Custom Elements spec](https://www.w3.org/TR/custom-elements/).  
+
+<br>
+
+### Visualizing the Markup
+
+Let's visualize what our markup will look like. We want to loop through a list of book objects and show the book as well as its child star rating component. We can start like this.  The nesting ensures that the `star-rating` component is a child component of `product-book`.
 
 ````html
 {{#each books}} 
@@ -74,6 +83,7 @@ Let's visualize what our markup will look like. We want to loop through a list o
 </product-book>
 {{#each-book}}
 ````
+
 
 ### Building the Book Component
 
@@ -88,7 +98,7 @@ steal(
         can.Component.extend({
             tag: 'product-book',                 
             template: null,
-            viewMode: {
+            viewModel: {
             },
             events: {
             }
@@ -98,7 +108,7 @@ steal(
 )
 ````
 
-Can `components` work differently than `controls` in that they are instantiated as soon as you pull them into your code, whereas a `control` can be defined and then instantiated separately using the `new` keyword. This means that we'll be `steal`ing this component into our main `app.js` file, but not doing anything beyond giving it a namespace in the `steal` callback function.
+Can components are created differently than controls: they are instantiated as soon as you pull them into your code. This means that we'll be `steal`'ing this component into our main `app.js` file, but not doing anything with it beyond alotting it a namespace in `steal`'s callback.
 
 Above, I left the `template` property `null`, but let's work with that now. As we've done before, we're going to reference a `stache` file that has the markup for our book component. We'll call it `bookTemplate` in the `steal` callback function and bind it to our `template` property as such. 
 One final thing before we work on pulling this into our `app.js` file. Components have a few special events that fire at specific times and a useful event we could use in exploring components for the first time is the `inserted` event, which fires once the component is inserted into the `DOM`. Let's simply log 'book inserted' at that point. 
@@ -137,10 +147,114 @@ steal(
         appTemplate,
         book
     ) {
-        var compiledTemplate = appTemplate();
+        var compiledTemplate = appTemplate(/* pass view model in here */);
         $('#app').append(compiledTemplate);
     }
 )
 ````
 
 At this point, we need to get ahold of some book data, since we're not passing any data into the template renderer function.
+
+### Mocking API calls with can.fixture
+
+A `can.fixture` intercepts your ajax calls there. I'm going to open `book_gallery/app/services/book_service.js` and define a `can.fixture`. Note, it's a plugin so I'm going to explicitly include it.  
+````javascript
+steal(
+    'can',
+    'can/util/fixture/fixture.js',
+    'models/books/books.js',
+    function(
+        can, fixture,
+        books
+    ){
+        can.fixture('GET /books', function() {
+            return books;  // a closure, coming from imported books
+        });
+    });
+````
+and then use it in my `app.js` file like this:
+
+````javascript
+steal(
+    'can',
+    './app.stache!',
+    './app/services/book_service.js',
+    'app/components/book/book.js',
+    function(
+        can,
+        appTemplate,
+        bookService,
+        book
+    ) {
+        $.get('/books').then(function(books) {
+
+            var compiledTemplate = appTemplate(books);
+            $('#app').append(compiledTemplate);
+
+        });
+    }
+)
+````
+
+All you need to do is call `can.fixture` or pull in a module that calls it to intercept get requests globally.
+
+### Building the Star Rating Component
+
+First, the template:
+
+````html
+<ul>
+    {{#each stars}}
+        <li 
+            can-mouseenter="beginRating ." 
+            can-mouseleave="clearRating ." 
+            can-click="commitRating" 
+            class="star {{#selected}}full{{else}}empty{{/selected}}"></li>
+    {{/each}}
+</ul>
+````
+
+So we have a list of stars that get rendered (these are unicode stars the css), and attached to each star there is some state toggling going on via the `can-mouseenter`, `can-mouseleave` and `can-click` attributes of the `<li>` element. Some of these event handlers are being called with the argument '`.`', which stands for the current object in the `stars` iteration. 
+
+So how does that hook into the JavaScript? These `can-EVENT` handler attributes modify the state of the stars array in the following component definition.
+
+It's a simplified version of what we're about to do (and there is one major bug in here regarding scope that we'll soon fix). We're creating a new observable list of star states and binding it to the `stars` property in the `viewModel`. 
+
+````javascript
+        return can.Component.extend({
+            tag: 'star-rating',
+            template: starRatingTemplate, 
+            viewModel: {
+                rated: {
+                    value: false
+                },
+                stars: new can.List([
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                ]),
+                rating: can.compute(function() {
+                    // code that always returns the current rating 
+                }),
+                beginRating: function(star) {
+                    // mouseover event handler that highlights all stars less than / equal in index to it 
+                },
+                commitRating: function() {
+                    // click event handler code that freezes stars ui state  
+                },
+                clearRating: function() {
+                    // code that un-freezes the stars ui state
+                },
+            }
+        });
+````
+
+If you glance at the template again, you'll see this in the `star` class:
+
+````html
+    {{#selected}}full{{else}}empty{{/selected}}
+````
+
+Initially, this stache template will render a CSS class of `empty` because the stars are all set to `false`. When I hover over a star, the `beginRating` event handler fires and sets the stars less than or equal in index of my mouse's target star to true, which *then* triggers a change in the view as the `{{#selected}}full{{else}}empty{{/selected}}` conditional is re-evaluated and renders a CSS class of `full`.
