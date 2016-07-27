@@ -232,11 +232,11 @@ First, the template:
 ````
 Some comments on this:
 
-We have a list of star `<li>`'s that get rendered. The actual stars are unicode characters contained in the `star_rating.less` file's `.full` and `.empty` classes, which allows us to programmatically toggle a star's appearance by changing the value of `selected`. 
+We have a list of star `<li>`'s that get rendered. The actual stars are unicode characters contained in the `star_rating.less` file's `.full` and `.empty` classes, which allows us to programmatically toggle a star's appearance by changing the value of `selected` in the `star-rating` component's `viewModel`. 
 
-Attached to each star are a few CanJS-specific event handlers that let us toggle the UI state of each star: `can-mouseenter`, `can-mouseleave` and `can-click`. Some of these event handlers are given the argument '`.`', which represents the current star in the `stars` `{{#each}}` loop. 
+Attached to each star are a few CanJS-specific event handlers that let us toggle their UI state: `can-mouseenter`, `can-mouseleave` and `can-click`. Some of these event handlers are given the argument '`.`', which represents the current star in the `stars` `{{#each}}` loop. 
 
-So how does that hook into the JavaScript? The keynames for these event-handler attributes are event callbacks found within our component code. Here's a simplified version of what we're about to do (and there is one major bug in here regarding scope that we'll soon fix). We're creating a new observable list of star states and binding it to the `stars` property in the `viewModel`. 
+So how does that hook into `star-rating`? The keynames for these event-handler attributes are event callbacks found within its component code. Here's a simplified version of what we're about to do (and there is one major bug in here regarding scope that we'll soon fix). We're creating a new observable list of star states and binding it to the `stars` property in the `viewModel`. 
 
 ````javascript
         return can.Component.extend({
@@ -271,7 +271,7 @@ So how does that hook into the JavaScript? The keynames for these event-handler 
 
 # The Update Cycle
 
-Let's review the `view` -> `viewModel` -> `view` update cycle that occurs when we interact with the stars. As we saw before, this is in the class declaration at the bottom of each star `<li>` element.
+Let's review the `view` -> `viewModel` -> `view` update cycle that occurs when we interact with the stars. As we saw before, this is in the class attribute at the bottom of each star `<li>` element.
 
 ````html
 {{#selected}}full{{else}}empty{{/selected}}
@@ -302,6 +302,149 @@ stars: new can.List([
 ]),
 
 ````
+
 This forces the view to update and the `{{#selected}}full{{else}}empty{{/selected}}` conditional is re-evaluated. The result is that list elements 1, 2 and 3 now have a class `full`, so their unicode star ☆ is replaced with ★.
 
+### The full `star-rating` component code
 
+Here is the complete `star-rating` component code:
+
+````javascript
+steal(
+
+    'can',
+    'can/view/stache/stache.js',
+    'can/map/define/define.js',
+
+    'app/components/star_rating/star_rating.stache!',
+    'app/components/star_rating/star_rating.less!',
+
+    function(
+
+        can, stache, define,
+        starRatingTemplate
+
+    ) {
+        return can.Component.extend({
+            tag: 'star-rating',
+            template: can.view('app/components/star_rating/star_rating.stache'),
+            viewModel: {
+                rated: {
+                    value: false
+                },
+                stars: new can.List([
+
+                            { selected: false },
+                            { selected: false },
+                            { selected: false },
+                            { selected: false },
+                            { selected: false }
+
+                ]),
+                rating: can.compute(function() {
+                    return can.filter(this.attr('stars'), function(star) {
+                        return star.attr('selected');
+                    }).length;
+                }),
+                beginRating: function(star) {
+                    if (this.attr('rated')) {
+                        return;
+                    }
+                    var index = this.attr('stars').indexOf(star);
+                    for (var i = 0; i <= index; ++i) {
+                        this.attr('stars.' + i + '.selected', true); 
+                    }
+                },
+                commitRating: function() {
+                    this.attr('rated', !this.attr('rated'));
+                },
+                clearRating: function() {
+                    if (this.attr('rated')) {
+                        return;
+                    }
+                    can.each(this.stars, function(star) {
+                        this.attr('selected', false);
+                    });
+                },
+            },
+            events: {
+                'inserted': function(){
+                }
+            }
+        }); 
+    }
+);
+
+````
+
+# Running our Book Gallery App (and Fixing a Subtle Bug)
+
+If we run the code and look at our gallery in the browser, we see that a `mouseenter` event on one `star-rating` component triggers the rating behavior on them all! Let's add a `{{ log }}` helper inside the `{{#each}}` loop in our `star_rating.app.stache` and see if there is anything of note:
+
+````javascript
+
+<ul>
+    {{#each stars}}
+    {{log}} // this logs five stars for each book
+        <li 
+            can-mouseenter="beginRating ." 
+            can-mouseleave="clearRating ." 
+            can-click="commitRating" 
+            class="star {{#selected}}full{{else}}empty{{/selected}}"></li>
+    {{/each}}
+</ul>
+
+````
+
+When we check the console for the results of `{{ log }}`, this is what we get:
+
+````javascript
+mustache_helpers.js:166 Map {_data: Object, _cid: ".map73" ... }
+mustache_helpers.js:166 Map {_data: Object, _cid: ".map71" ... }
+mustache_helpers.js:166 Map {_data: Object, _cid: ".map69" ... }
+mustache_helpers.js:166 Map {_data: Object, _cid: ".map67" ... }
+mustache_helpers.js:166 Map {_data: Object, _cid: ".map65" ... }
+mustache_helpers.js:166 Map {_data: Object, _cid: ".map73" ... } /* the _cids start to repeat here */
+mustache_helpers.js:166 Map {_data: Object, _cid: ".map71" ... }
+mustache_helpers.js:166 Map {_data: Object, _cid: ".map69" ... }
+mustache_helpers.js:166 Map {_data: Object, _cid: ".map67" ... }
+mustache_helpers.js:166 Map {_data: Object, _cid: ".map65" ... }
+...
+````
+
+It may not be obvious at first, but there is a pattern below. Each `stars` list has a `_cid` property that let's assume for now uniquely identifies it.  After the fifth line, they start repeating. While it might seem like we've done something wrong with our event handlers, this is a fairly strong indication that the issue is in our `stars` list. It seems to be the same exact set of stars for each component. The reason this occurs is that the `viewModel` we define in our component code is attached to the prototype of the component, so each instance shares it.  We can use the `define` plugin to set data on the specific instance of the component, rather than the prototype. Assuming we've pulled in the `define` plugin, we need to put our `stars` list inside of a `define` property within our `viewModel`. Here is just the relevant changes to the `viewModel`:
+
+````javascript
+
+viewModel: {
+    define: {
+        rated: {
+            value: false
+        },
+        stars: {
+            value: function() {
+                return new can.List([
+
+                    { selected: false },
+                    { selected: false },
+                    { selected: false },
+                    { selected: false },
+                    { selected: false }
+
+                ]);
+            }
+        },
+
+    },
+...
+````
+
+To summarize the changes we made to give each `star-rating` component a unique `stars` list, we:
+
++ imported the `define` plugin from `can/map/define/define.js`
++ created a `define` property in our `viewModel` 
++ we put made properties for the data that needs to be unique to the specific component tag (`rated` and `stars`) inside of the `define` object
++ and we defined the initial `value` for the `stars` property to be a function that returns a new `can.List` of stars (if we hadn't put the `new can.List` code inside of a function, then that object would be passed by reference and thus be shared among all instances of `star-rating`).
+
+<br>
+<br>
