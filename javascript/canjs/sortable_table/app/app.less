@@ -1,0 +1,47 @@
+body {
+    font-family: sans-serif, Arial, Helvetica; 
+    h1, h2 {
+        margin-left: 20px;
+    }
+}
+
+#app {
+    border:     4px solid lightgray; 
+    background: whitesmoke;
+    box-sizing: border-box;
+    height:     100%;
+    margin:     10px;
+}
+
+table {
+    margin: 20px;
+
+    input {
+        width:  100%;
+        height: 100%;
+        border: 1px solid lightgray;
+    }
+    .filters input {
+        border: none;
+    } 
+
+    thead,
+    tbody.filters {
+        background: #03a9f4;
+    }
+    tr {
+        height: 2em;
+    }
+    thead tr td {
+        user-select: none;
+        cursor:     pointer;
+        padding: 5px;
+    }
+    thead tr td:hover {
+        background: lightblue;
+    }
+
+    thead tr td {
+        min-width: 120px;
+    }
+}

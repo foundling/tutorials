@@ -1,0 +1,37 @@
+{
+  "name": "tasklist",
+  "version": "1.0.0",
+  "description": "an HTML5 localStorage based task application.",
+  "main": "app/app",
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha test"
+  },
+  "repository": {},
+  "keywords": [
+    "tasklist",
+    "localStorage",
+    "HTML5",
+    "productivity"
+  ],
+  "author": "Alex Ramsdell",
+  "license": "MIT",
+  "bugs": {},
+  "dependencies": {
+    "can": "^2.3.24",
+    "jquery": "^2.2.4",
+    "steal": "^0.16.21",
+    "steal-tools": "^0.16.4"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "funcunit": "^3.1.0-pre.1",
+    "http-server": "^0.9.0",
+    "mocha": "^2.5.3",
+    "qunit": "^0.9.1",
+    "steal-mocha": "0.0.3"
+  }
+}
