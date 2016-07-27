@@ -51,7 +51,7 @@ book_gallery/
 ````
 # Why Components ?
 
-A component has a layer of abstraction around the implementation of its functionality. You use it through a distinct interface or api. If code having to know about other code is a problem, then a component is one solution because you can think on it, work on it, update it, etc., in a fair degree of isolation, for the very reason that it doesn't depend on anything else. 
+A component has a layer of abstraction around the implementation of its functionality. You use it through a distinct interface or api. If code having to know about other code is a problem, then a component is one solution because you can think about it, work on it, update it, etc., in a fair degree of isolation because it tries to depend on very little.
 
 In CanJS, you can implement components with `can.Component.extend` and compose them with HTML. 
 
