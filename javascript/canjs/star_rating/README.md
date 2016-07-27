@@ -14,32 +14,48 @@ This is what our file tree will look like:
 
 ````javascript
 book_gallery/
+
     README.md
     index.html
-    node_modules/
     package.json
+
+    node_modules/
+        ...
+
     app/
         app.js
         app.stache
+        app.less
+
         components/
+
             book/
                 book.js
                 book.stache
                 book.less
+                book_test.js
+
             star_rating/
                 star_rating.js
                 star_rating.stache
                 star_rating.less
+                star_rating_test.js
+
         models/
             books.js
+            books_test.js
+
         services/
-            bookService.js
+            book_service.js
+            book_service_test.js
 ````
 # Why Components ?
 
-A major benefit of using a component is that it simplifies and decouples the interdependencies among various functions of your UI, acting as a self-contained unit.  This makes it easier to develop each piece in isolation. Stylistically, CanJS components provide a clearer and more declarative interface to the functionality they offer than a `can.Control`.
+A component has a layer of abstraction around the implementation of its functionality. You use it through a distinct interface or api. If code having to know about other code is a problem, then a component is one solution because you can work it, think about it, update it, re-design it, etc.  in relative isolation, for the very reason that it doesn't depend on anything else. 
 
-# Let's get started!
+In CanJS, they provide a more markup-centric service, allowing you to compose widgets with HTML. 
+
+Let's get started!
 
 In the HTML markup, a CanJS component looks like an ordinary HTML tag:
 

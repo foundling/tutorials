@@ -5,7 +5,7 @@ steal(
 
     'app/app.stache!',
 
-    'app/services/bookService.js',
+    'app/services/book_service.js',
     'app/components/book',
     'app/components/star_rating/star_rating.js',
 
