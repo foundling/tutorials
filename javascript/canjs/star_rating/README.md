@@ -260,4 +260,4 @@ If you glance at the template again, you'll see this in the `star` class:
     {{#selected}}full{{else}}empty{{/selected}}
 ````
 
-Initially, this stache template will render a CSS class of `empty` because the stars are all set to `false`. When I hover over a star, the `beginRating` event handler fires and sets the stars less than or equal in index of my mouse's target star to true, which *then* triggers a change in the view as the `{{#selected}}full{{else}}empty{{/selected}}` conditional is re-evaluated and renders a CSS class of `full`.
+Initially, this stache template will render CSS classes of `empty` for all stars because their corresponding observable list valaues are all set to `false`. When I hover over a star, the `beginRating` event handler fires and sets the stars less than or equal in index of my mouse's target star to true, which *then* triggers a change in the view as the `{{#selected}}full{{else}}empty{{/selected}}` conditional is re-evaluated and renders a CSS class of `full`.
