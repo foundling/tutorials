@@ -217,7 +217,7 @@ First, the template:
 </ul>
 ````
 
-So we have a list of stars that get rendered (these are unicode stars the css), and attached to each star there is some state toggling going on via the `can-mouseenter`, `can-mouseleave` and `can-click` attributes of the `<li>` element. Some of these event handlers are being called with the argument '`.`', which stands for the current object in the `stars` iteration. 
+So we have a list of stars that get rendered (these are unicode stars in the `stars.less` file), and attached to each star there is some state toggling going on via the `can-mouseenter`, `can-mouseleave` and `can-click` attributes of the `<li>` element. Some of these event handlers are being called with the argument '`.`', which stands for the current object in the `stars` iteration. 
 
 So how does that hook into the JavaScript? These `can-EVENT` handler attributes modify the state of the stars array in the following component definition.
 
