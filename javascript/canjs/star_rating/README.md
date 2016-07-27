@@ -412,31 +412,31 @@ mustache_helpers.js:166 Map {_data: Object, _cid: ".map65" ... }
 ...
 ````
 
-It may not be obvious at first, but there is a pattern below. Each `stars` list has a `_cid` property that let's assume for now uniquely identifies it.  After the fifth line, they start repeating. While it might seem like we've done something wrong with our event handlers, this is a fairly strong indication that the issue is in our `stars` list. It seems to be the same exact set of stars for each component. The reason this occurs is that the `viewModel` we define in our component code is attached to the prototype of the component, so each instance shares it.  We can use the `define` plugin to set data on the specific instance of the component, rather than the prototype. Assuming we've pulled in the `define` plugin, we need to put our `stars` list inside of a `define` property within our `viewModel`. Here is just the relevant changes to the `viewModel`:
+It may not be obvious at first, but there is a pattern below. Each `stars` list has a `_cid` property that let's assume for now uniquely identifies it.  After the fifth line, they start repeating. While it might seem like we've done something wrong with our event handlers, this is a fairly strong indication that the issue is in our `stars` list. It seems to be the same exact set of stars for each component. The reason this occurs is that the `viewModel` we define in our component code is attached to the prototype of the component, so each instance shares it.  We can use the `define` plugin to attach a unique list to each instance of the component, rather than their shared prototypes. Assuming we've pulled in the `define` plugin, we need to put our `stars` list inside of a `define` property within our `viewModel`. Here is just the relevant changes to the `viewModel`:
 
 ````javascript
+    ...
+    viewModel: {
+        define: {
+            rated: {
+                value: false
+            },
+            stars: {
+                value: function() {
+                    return new can.List([
 
-viewModel: {
-    define: {
-        rated: {
-            value: false
+                        { selected: false },
+                        { selected: false },
+                        { selected: false },
+                        { selected: false },
+                        { selected: false }
+
+                    ]);
+                }
+            },
+
         },
-        stars: {
-            value: function() {
-                return new can.List([
-
-                    { selected: false },
-                    { selected: false },
-                    { selected: false },
-                    { selected: false },
-                    { selected: false }
-
-                ]);
-            }
-        },
-
-    },
-...
+    ...
 ````
 
 To summarize the changes we made to give each `star-rating` component a unique `stars` list, we:
@@ -444,7 +444,7 @@ To summarize the changes we made to give each `star-rating` component a unique `
 + imported the `define` plugin from `can/map/define/define.js`
 + created a `define` property in our `viewModel` 
 + we put made properties for the data that needs to be unique to the specific component tag (`rated` and `stars`) inside of the `define` object
-+ and we defined the initial `value` for the `stars` property to be a function that returns a new `can.List` of stars (if we hadn't put the `new can.List` code inside of a function, then that object would be passed by reference and thus be shared among all instances of `star-rating`).
++ and we defined the initial `value` for the `stars` property to be a function that returns a new `can.List` of stars (if we hadn't put the `new can.List` code inside of a function, then that object would be passed by reference and thus still be the same among all instances of `star-rating`).
 
 <br>
 <br>
