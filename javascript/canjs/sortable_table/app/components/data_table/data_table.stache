@@ -1,7 +1,7 @@
 <h1>Directory Listing</h1>
 <table>
     <thead>
-        <tr can-click="reSort">
+        <tr class="sort-columns">
             <td id="sort-firstName">First Name</td>
             <td id="sort-lastName">Last Name</td>
             <td id="sort-level">Level</td>
