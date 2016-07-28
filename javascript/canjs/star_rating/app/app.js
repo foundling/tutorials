@@ -1,8 +1,6 @@
 steal(
 
     'can',
-    'can/view/stache/stache.js',
-
 
     'app/services/book_service.js',
     'app/components/book',
@@ -12,7 +10,7 @@ steal(
     'app/app.less!',
 
     function(
-        can, stache,
+        can, 
         bookService, book, starRating, // instantiated upon reference 
         appTemplate
     ) {

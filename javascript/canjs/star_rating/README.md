@@ -1,5 +1,21 @@
 # CanJS - Building Features with Components
 
+# Table of Contents
+
++ [Goals](#goals)
++ [Project Layout](#project-layout)
++ [The Case for Components](#the-case-for-components)
++ [Component Syntax](#component-syntax)
++ [Visualizing The Markup](#visualizing-the-markup)
++ [Building the Book Component](#building-the-book-component)
++ [Mocking API Calls with Can.Fixture](#mocking-api-calls-with-can-fixture)
++ [Our Book Data](#our-book-data)
++ [Building the Star Rating Component](#building-the-star-rating-component)
++ [The Update Cycle](#the-update-cycle)
++ [The Full `star-rating` Component Code](#the-full-star-rating-component-code)
++ [Fixing a Bug](#fixing-a-bug)
+
+
 # Goals 
 
 The goals of this tutorial are:
@@ -49,7 +65,7 @@ book_gallery/
             book_service.js
             book_service_test.js
 ````
-# Why Components ?
+# The Case for Components
 
 A component has a layer of abstraction around the implementation of its functionality which takes the form of an interface or API. If code having to know about other code is a problem in software development, then a component is one solution because when you conceive of code as components, you can think about it, work on it, develop it, etc., in a fair degree of isolation because it tries to depend on very little.
 
@@ -192,7 +208,7 @@ steal(
 )
 ````
 
-### Our Books Data
+### Our Book Data
 
 Before moving on, let's quickly glance at the structure of our mock books data. This is a pretty pared-down model for book metadata, but it's good enough for the purpose of this tutorial. 
 
@@ -377,7 +393,7 @@ steal(
 
 ````
 
-# Running our Book Gallery App (and Fixing a Subtle Bug)
+# Fixing a Bug
 
 If we run the code and look at our gallery in the browser, we see that a `mouseenter` event on one `star-rating` component triggers the rating behavior on them all! Let's add a `{{ log }}` helper inside the `{{#each}}` loop in our `star_rating.app.stache` and see if there is anything of note:
 

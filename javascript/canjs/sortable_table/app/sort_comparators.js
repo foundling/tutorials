@@ -2,7 +2,8 @@ steal(
     'can',
     function() {
 
-        var dynamicSort = function() {
+        return function() {
+
             var comparatorFunctions = {
 
                 stringAscending: function(a,b) {
