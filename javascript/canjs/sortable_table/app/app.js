@@ -22,21 +22,17 @@ steal(
 
         ) {
 
-            // retrieve the employee data from the backend 
-            // we're using the can.fixture plugin to intercept a get request
-            // and return a mock response
             $.get('/employees').then(function(employees){
 
                 var viewModel = { 
                     employees: employees, 
                     filterFunc: function(context, el, event) {
+                        var self = this;
                         
                         // reset visibility each time a filter is triggered
                         can.each(this.employees, function(employee) {
                             employee.attr('visible', true);       
                         });
-
-                        var self = this;
 
                         // properties we care about
                         var properties = ['firstName', 'lastName', 'level', 'role', 'office', 'eid'];

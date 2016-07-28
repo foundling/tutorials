@@ -44,29 +44,17 @@
         </tr>
     </tbody>
     <tbody>
-        {{#each employees}}
+    {{#each employees}}
         {{#if visible }}
         <tr>
-            <td>
-                <input 
-                    value="{{ firstName }}"
-                    can-value="firstName"/>
-            </td> 
-            <td>
-                <input 
-                    value="{{ lastName }}"
-                    can-value="lastName"/>
-            </td> 
-            <td>{{ role }}</td>
-            <td>
-                <input 
-                value="{{ level }}"
-                can-value="level"/>
-            </td>
-            <td>{{ office }}</td>
+            <td> <input value="{{ firstName }}" can-value="firstName"/> </td> 
+            <td> <input value="{{ lastName }}" can-value="lastName"/> </td> 
+            <td> <input value="{{ level }}" can-value="level"/> </td>
+            <td> {{ role }} </td>
+            <td> {{ office }} </td>
             <td class="reference">{{ eid }}</td>
         </tr>
         {{/visible}}
-        {{/each}}
+    {{/each}}
     </tbody>
 </table>

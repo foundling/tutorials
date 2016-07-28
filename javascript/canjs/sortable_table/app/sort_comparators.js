@@ -1,37 +1,32 @@
-steal(
-    'can',
-    function() {
+steal(function() {
+    return {
 
-        return function() {
+        stringAscending: function(a,b) {
 
-            var comparatorFunctions = {
+            a = a.toLowerCase();
+            b = b.toLowerCase();
+            if (a < b) return -1;
+            if (a > b) return 1;
+            return 0;
+        },
 
-                stringAscending: function(a,b) {
-                    if (a < b) return -1;
-                    if (a === b) return 0;
-                    if (a > b) return 1;
-                },
+        strDescending: function(a,b) {
 
-                strDescending: function(a,b) {
-                    if (a > b) return -1;
-                    if (a === b) return 0;
-                    if (a < b) return 1;
-                }, 
+            a = a.toLowerCase();
+            b = b.toLowerCase();
+            if (a > b) return -1;
+            if (a < b) return 1;
+            return 0;
 
-                numAscending: function(a,b) { 
-                    return a - b;
-                },
+        }, 
 
-                numDescending: function(a,b) { 
-                    return b - a;
-                }
-            };
+        numAscending: function(a,b) { 
+            return a - b;
+        },
 
-        };
-        var dynamicSort = function(a,b) {
-            console.log(this);
+        numDescending: function(a,b) { 
             return b - a;
-        };
+        }
+    };
 
-        return dynamicSort;
 });
