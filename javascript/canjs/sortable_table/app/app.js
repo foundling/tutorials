@@ -6,7 +6,7 @@ steal(
         './models/employee.js',
         './services/employee_lookup.js',
 
-        './components/data_table.js',
+        './components/data_table/data_table.js',
 
         './app.stache!',
 

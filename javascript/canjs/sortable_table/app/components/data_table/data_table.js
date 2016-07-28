@@ -16,11 +16,31 @@ steal(
             template: dataTableView,
             viewModel: {
                 employees: null, 
-                filterFunc: function(context, el, event) {
-                    var self = this;
+                reSort: function(context, element, event) {
+
+                    var $targetElement = $(event.target),
+                        comparator = $targetElement.attr('id').split('-')[1];
+
+                    element.find('.sort-by').filter(function(index, el){
+                        return !$targetElement.is(el);
+                    }).removeClass('sort-by');
+
+                    if ($targetElement.hasClass('sort-by')) {
+                        $targetElement.removeClass('sort-by');
+                        employees.reverse();
+                    } else {
+                        $targetElement.addClass('sort-by');
+                        this.attr('employees').sort(comparator);
+                    }
+                }
+            },
+            events: {
+
+                'input keyup': function(el, event) {
+                    var employees = this.viewModel.attr('employees');
                     
                     // reset visibility each time a filter is triggered
-                    can.each(this.employees, function(employee) {
+                    can.each(employees, function(employee) {
                         employee.attr('visible', true);       
                     });
 
@@ -42,7 +62,7 @@ steal(
                     // do this on each can.each iteration below, to set the obj to 
                     // visible or invisible
 
-                    can.each(this.employees, function(employee, index) {
+                    can.each(employees, function(employee, index) {
 
                         var visible = pairs.reduce(function(bool, pair) {
                             var prop = pair[0];
@@ -50,32 +70,11 @@ steal(
                             return bool & (new RegExp(pattern, 'i').test(employee[prop]));
                         }, true);
 
-                        self.employees.attr(index + '.visible', visible);
+                        employees.attr(index + '.visible', visible);
                     });
 
-                },
-                reSort: function(context, element, event) {
-
-                    var $targetElement = $(event.target),
-                        comparator = $targetElement.attr('id').split('-')[1];
-
-                    element.find('.sort-by').filter(function(index, el){
-                        return !$targetElement.is(el);
-                    }).removeClass('sort-by');
-
-                    if ($targetElement.hasClass('sort-by')) {
-                        $targetElement.removeClass('sort-by');
-                        employees.reverse();
-                    } else {
-                        $targetElement.addClass('sort-by');
-                        employees.sort(comparator);
-                    }
                 }
-            },
-            events: {
-                'inserted': function() {
-                    console.log(this.viewModel.attr('employees'));
-                }
+
             }
         });
 

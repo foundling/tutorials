@@ -12,35 +12,12 @@
     </thead>
     <tbody class="filters">
         <tr>
-            <td>
-                <input 
-                    id="filter-firstName"
-                    can-keyup="filterFunc"/>
-            </td>
-            <td >
-                <input 
-                    id="filter-lastName"
-                    can-keyup="filterFunc"/>
-            </td>
-            <td>
-                <input 
-                    id="filter-level"
-                    can-keyup="filterFunc"/>
-            </td>
-            <td>
-                <input 
-                    id="filter-role"
-                    can-keyup="filterFunc"/>
-            </td>
-            <td>
-                <input 
-                    id="filter-office" 
-                    can-keyup="filterFunc"/>
-            </td>
-            <td>
-                <input id="filter-eid"
-                    can-keyup="filterFunc"/>
-            </td>
+            <td> <input id="filter-firstName"/> </td>
+            <td> <input id="filter-lastName"/>  </td>
+            <td> <input id="filter-level"/>     </td>
+            <td> <input id="filter-role"/>      </td>
+            <td> <input id="filter-office"/>    </td>
+            <td> <input id="filter-eid"/>       </td>
         </tr>
     </tbody>
     <tbody>
