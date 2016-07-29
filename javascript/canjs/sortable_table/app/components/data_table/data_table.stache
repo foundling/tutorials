@@ -1,17 +1,17 @@
 <h1>Directory Listing</h1>
 <table>
     <thead>
-        <tr class="sort-columns">
-            <td id="sort-firstName">First Name</td>
-            <td id="sort-lastName">Last Name</td>
-            <td id="sort-level">Level</td>
-            <td id="sort-role">Role</td>
-            <td id="sort-office">Office</td>
-            <td id="sort-eid">Eid</td>
+        <tr class="sort-keys">
+            <th can-click="sortRows 'firstName' " id="sort-firstName">First Name</th>
+            <th can-click="sortRows 'lastName' " id="sort-lastName">Last Name</th>
+            <th can-click="sortRows 'level' " id="sort-level">Level</th>
+            <th can-click="sortRows 'role' " id="sort-role">Role</th>
+            <th can-click="sortRows 'office' " id="sort-office">Office</th>
+            <th can-click="sortRows 'eid' " id="sort-eid">Eid</th>
         </tr>
     </thead>
-    <tbody class="filters">
-        <tr>
+    <tbody>
+        <tr class="filter-keys">
             <td> <input id="filter-firstName"/> </td>
             <td> <input id="filter-lastName"/>  </td>
             <td> <input id="filter-level"/>     </td>

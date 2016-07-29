@@ -1,4 +1,5 @@
 body {
+
     font-family: sans-serif, Arial, Helvetica; 
     h1, h2 {
         margin-left: 20px;
@@ -21,21 +22,24 @@ table {
         height: 100%;
         border: 1px solid lightgray;
     }
-    .filters input {
-        border: none;
-    } 
 
-    thead,
-    tbody.filters {
+    thead {
         background: #03a9f4;
     }
+
+    tbody .filter-keys input {
+        background: lightgray;
+        border: 1px solid black;
+    }
+
     tr {
         height: 2em;
     }
+
     thead tr td {
-        user-select: none;
-        cursor:     pointer;
-        padding: 5px;
+        user-select:    none;
+        cursor:         pointer;
+        padding:        5px;
     }
     thead tr td:hover {
         background: lightblue;
@@ -45,3 +49,6 @@ table {
         min-width: 120px;
     }
 }
+
+.sorted { background: red}
+

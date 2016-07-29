@@ -1,12 +1,26 @@
 steal(
 
     'can',
-    'can/list/sort/sort.js',
 
     function(
-        can,sort
+        can
     ) {
+
+        var sortKey = null;
+
         return {
+
+            sortRows: function(el, ev) {
+                var comparator = el.attr('id').split('-')[1];
+                console.log(comparator, sortKey);
+                
+                if (comparator === sortKey) {
+                    this.viewModel.attr('employees').reverse();
+                } else {
+                    sortKey = comparator;
+                    this.viewModel.attr('employees').sort(sortKey);
+                }
+            },
 
             filterRows: function (el, event) {
 
@@ -45,28 +59,7 @@ steal(
 
                     employees.attr(index + '.visible', visible);
                 });
-
-            },
-
-            sortRows: function(element, event) {
-
-                var targetElement = $(event.target);
-                var comparator = targetElement.attr('id').split('-')[1];
-
-                element.find('.sort-by').filter(function(index, el){
-                    return !targetElement.is(el);
-                }).removeClass('sort-by');
-
-                if (targetElement.hasClass('sort-by')) {
-                    targetElement.removeClass('sort-by');
-                    employees.reverse();
-                } else {
-                    targetElement.addClass('sort-by');
-                    this.viewModel.attr('employees').sort(comparator);
-                }
             }
-
         };
-
     }
 );

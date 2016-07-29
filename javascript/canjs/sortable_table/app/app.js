@@ -3,17 +3,14 @@ steal(
         'can',
         'can/list/sort/sort.js',
 
-        './models/employee.js',
         './services/employee_lookup.js',
-
         './components/data_table/data_table.js',
-
         './app.stache!',
 
         function(
 
             can, sort, 
-            Employee, EmployeeLookupService,
+            EmployeeLookupService,
             dataTable,
             appView
 

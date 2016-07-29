@@ -1,16 +1,15 @@
 steal(
 
     'can',
-    'can/list/sort/sort.js',
-
     './data_table_events.js',
     './data_table.stache!', 
     './data_table.less!', 
 
     function(
 
-        can, sort,
-        dataTableEvents, dataTableView
+        can,
+        dataTableEvents,
+        dataTableView
 
     ) {
 
@@ -18,10 +17,13 @@ steal(
 
             tag: 'data-table',
             template: dataTableView,
-            viewModel: null,
+            viewModel: {
+                employees: null,
+            },
             events: {
-                'input[id*="filter-"] keyup':   dataTableEvents.filterRows,
-                '.sort-columns click':          dataTableEvents.sortRows
+                'th[id*="sort-"] click': dataTableEvents.sortRows,
+                'inserted': function() {
+                }
             }
 
         });
