@@ -10,15 +10,15 @@ steal(
 
         return {
 
-            sortRows: function(el, ev) {
-                var comparator = el.attr('id').split('-')[1];
-                console.log(comparator, sortKey);
-                
-                if (comparator === sortKey) {
-                    this.viewModel.attr('employees').reverse();
+            sortRows: function(context, element, event) {
+                var id = element.attr('id');
+                $('#' + id).addClass('sorted');
+
+                if (element.hasClass('sorted')) {
+                    this.attr('employees').reverse();
                 } else {
-                    sortKey = comparator;
-                    this.viewModel.attr('employees').sort(sortKey);
+                    element.addClass('sorted');
+                    this.attr('employees').sort(comparator);
                 }
             },
 

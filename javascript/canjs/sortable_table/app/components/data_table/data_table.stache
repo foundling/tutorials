@@ -1,23 +1,23 @@
 <h1>Directory Listing</h1>
 <table>
     <thead>
-        <tr class="sort-keys">
-            <th can-click="sortRows 'firstName' " id="sort-firstName">First Name</th>
-            <th can-click="sortRows 'lastName' " id="sort-lastName">Last Name</th>
-            <th can-click="sortRows 'level' " id="sort-level">Level</th>
-            <th can-click="sortRows 'role' " id="sort-role">Role</th>
-            <th can-click="sortRows 'office' " id="sort-office">Office</th>
-            <th can-click="sortRows 'eid' " id="sort-eid">Eid</th>
+        <tr can-click="sortRows" class="sort-keys">
+            <th id="sort-firstName">First Name</th>
+            <th id="sort-lastName">Last Name</th>
+            <th id="sort-level">Level</th>
+            <th id="sort-role">Role</th>
+            <th id="sort-office">Office</th>
+            <th id="sort-eid">Eid</th>
         </tr>
     </thead>
     <tbody>
-        <tr class="filter-keys">
+        <tr can-keyup="filterRows" class="filter-keys">
             <td> <input id="filter-firstName"/> </td>
-            <td> <input id="filter-lastName"/>  </td>
-            <td> <input id="filter-level"/>     </td>
-            <td> <input id="filter-role"/>      </td>
-            <td> <input id="filter-office"/>    </td>
-            <td> <input id="filter-eid"/>       </td>
+            <td> <input id="filter-lastName" /> </td>
+            <td> <input id="filter-level"    /> </td>
+            <td> <input id="filter-role"     /> </td>
+            <td> <input id="filter-office"   /> </td>
+            <td> <input id="filter-eid"      /> </td>
         </tr>
     </tbody>
     <tbody>
