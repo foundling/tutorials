@@ -1,7 +1,6 @@
 steal(
 
         'can',
-        'can/list/sort/sort.js',
 
         './services/employee_lookup.js',
         './components/data_table/data_table.js',
@@ -9,15 +8,14 @@ steal(
 
         function(
 
-            can, sort, 
-            EmployeeLookupService,
-            dataTable,
-            appView
+            can, 
+            EmployeeLookupService, dataTable, appView
 
         ) {
             $.get('/employees').then(function(employees){
 
-                var compiledTemplate = appView({ employees: employees });
+                console.log(employees);
+                var compiledTemplate = appView(employees);
                 $('#app').append(compiledTemplate);
 
             });
