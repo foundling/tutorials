@@ -15,12 +15,9 @@ steal(
         var sortKey = null;
 
         can.fixture('GET /employees', function() {
-            var vm = {
-                employees: new can.List(employees),
-                sortKey: null,
-
-            };
-            return new can.Map(vm);
+            return new can.Map({
+                rows: new can.List(employees),
+            });
         });
     }
 );

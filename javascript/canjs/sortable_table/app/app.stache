@@ -1,4 +1,3 @@
-{{ log }}
-{{#with employees }}
-<data-table {(employees)}="employees"></data-table>
+{{#with rows }}
+<data-table {(rows)}="rows"></data-table>
 {{/with}}

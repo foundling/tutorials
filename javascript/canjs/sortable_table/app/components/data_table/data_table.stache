@@ -21,7 +21,7 @@
         </tr>
     </tbody>
     <tbody>
-    {{#each employees}}
+    {{#each rows}}
         {{#if visible }}
         <tr>
             <td> <input value="{{ firstName }}" can-value="firstName"/> </td> 
@@ -35,3 +35,6 @@
     {{/each}}
     </tbody>
 </table>
+{{ pagedData }}
+<button>Prev</button>
+<button>Next</button>

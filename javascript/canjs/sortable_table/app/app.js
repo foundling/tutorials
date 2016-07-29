@@ -14,7 +14,6 @@ steal(
         ) {
             $.get('/employees').then(function(employees){
 
-                console.log(employees);
                 var compiledTemplate = appView(employees);
                 $('#app').append(compiledTemplate);
 
