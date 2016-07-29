@@ -19,12 +19,17 @@ steal(
             template: dataTableView,
             viewModel: {
                 sortKey: '',
+                columns: null,
                 sortRows: function(context, element, event) {
 
                     var comparator = element.attr('id').split('-')[1];
                     var isSorted = element.hasClass('sorted');
+                    var columns = this.attr('columns');
 
-                    //console.log(this.attr('sortKey'), comparator);
+                    columns.filter(function(index, col) {
+                        return $(col).hasClass('sorted') && !$(col).is(element);
+                    }).removeClass('sorted'); 
+
 
                     if (comparator === this.attr('sortKey')) {
                         this.attr('sortKey', null);
@@ -38,6 +43,12 @@ steal(
 
                 },
             },
+            events: {
+                'inserted': function() {
+                    // cache a ref to columns
+                    this.viewModel.attr('columns', $('th[id*="sort-"]'));
+                }
+            }
         });
     }
 );
