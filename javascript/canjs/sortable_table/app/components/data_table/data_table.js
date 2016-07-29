@@ -19,14 +19,16 @@ steal(
             template: dataTableView,
             viewModel: {
                 sortKey: '',
-                columns: null,
+                sortColumns: null,      // a jquery list of th elements
+                filterColumns: null,    // a jquery list of th elements
                 sortRows: function(context, element, event) {
 
                     var comparator = element.attr('id').split('-')[1];
                     var isSorted = element.hasClass('sorted');
-                    var columns = this.attr('columns');
+                    var sortColumns = this.attr('sortColumns');
 
-                    columns.filter(function(index, col) {
+                    // clear sorted UI state for all other columns.
+                    sortColumns.filter(function(index, col) {
                         return $(col).hasClass('sorted') && !$(col).is(element);
                     }).removeClass('sorted'); 
 
@@ -46,7 +48,8 @@ steal(
             events: {
                 'inserted': function() {
                     // cache a ref to columns
-                    this.viewModel.attr('columns', $('th[id*="sort-"]'));
+                    this.viewModel.attr('sortColumns', $('th[id*="sort-"]'));
+                    this.viewModel.attr('filterColumns', $('th[id*="filter-"]'));
                 }
             }
         });

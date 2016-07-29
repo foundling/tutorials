@@ -12,16 +12,15 @@
     </thead>
     <tbody>
         <tr can-keyup="filterRows" class="filter-keys">
-            <td> <input id="filter-firstName"/> </td>
-            <td> <input id="filter-lastName" /> </td>
-            <td> <input id="filter-level"    /> </td>
-            <td> <input id="filter-role"     /> </td>
-            <td> <input id="filter-office"   /> </td>
-            <td> <input id="filter-eid"      /> </td>
+            <td> <input can-keyup="filterRows" id="filter-firstName"/> </td>
+            <td> <input can-keyup="filterRows" id="filter-lastName" /> </td>
+            <td> <input can-keyup="filterRows" id="filter-level"    /> </td>
+            <td> <input can-keyup="filterRows" id="filter-role"     /> </td>
+            <td> <input can-keyup="filterRows" id="filter-office"   /> </td>
+            <td> <input can-keyup="filterRows" id="filter-eid"      /> </td>
         </tr>
     </tbody>
     <tbody>
-{{ log}}
     {{#each employees}}
         {{#if visible }}
         <tr>
