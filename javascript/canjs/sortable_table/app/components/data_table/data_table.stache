@@ -21,7 +21,7 @@
         </tr>
     </tbody>
     <tbody>
-    {{#each rows}}
+    {{#each pagedData}}
         {{#if visible }}
         <tr>
             <td> <input value="{{ firstName }}" can-value="firstName"/> </td> 
@@ -35,6 +35,5 @@
     {{/each}}
     </tbody>
 </table>
-{{ pagedData }}
-<button>Prev</button>
-<button>Next</button>
+<button can-click="back">Prev</button>
+<button can-click="next">Next</button>

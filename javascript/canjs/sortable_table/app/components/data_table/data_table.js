@@ -47,15 +47,47 @@ steal(
                     }
 
                 },
+                next: function() {
+                    var index = this.attr('pIndex');
+                    var interval =  this.attr('pageInterval');
+                    var newIndex = index + interval;
+                    var endOfData = this.attr('pagedData').length < interval; // don't forget other edge cases
+
+                    console.log(newIndex);
+                    if (!endOfData) {
+                        this.attr('pIndex', newIndex);
+                    }
+                },
+                back: function() {
+                    var index = this.attr('pIndex');
+                    var interval =  this.attr('pageInterval');
+                    var newIndex = index - interval;
+                    var endOfData = index >= 0; 
+
+
+                    console.log(newIndex);
+                    if (!endOfData) {
+                        this.attr('pIndex', newIndex);
+                    }
+                },
                 define: {
-                    paginationLevel: {
+                    pageInterval: {
                         value: 5,
                     },
+                    pIndex: {
+                        value: 0
+                    },
                     pagedData: {
-                        value: function() {
-                            var pagination = this.attr('paginationLevel');
-                            return pagination; 
-                        }, 
+                        value: can.List,
+                        get: function() {
+                            var low = this.attr('pIndex');
+                            var high = low + this.attr('pageInterval');
+                            return this.attr('rows').slice(low, high); 
+                        },
+                        set: function(increment) {
+                            var index = this.attr('pIndex');
+                            return this.attr('rows').slice(index, this.attr('pageInterval')); 
+                        }
                     }
                 }
             },
