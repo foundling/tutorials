@@ -1,4 +1,4 @@
-function *gen(max) {
+function* gen(max) {
 
     var i = 0;
     while (i < max) {
