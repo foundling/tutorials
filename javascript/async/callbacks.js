@@ -21,4 +21,5 @@ var list = [1,2,3,4,5];
 var doubledList = transform(list, function(element) {
     return element * 2;
 });
+console.log(list);
 console.log(doubledList);
