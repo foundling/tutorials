@@ -1,55 +1,60 @@
-var q = {};
+function PubSub() {
 
-var pubsub = (function(q){
-
+    var q = {};
+    var topics = {};
     var uuid = -1;
-
+    
     function publish(topic, data) {
 
-        if (!q[topic]) {
+        if (!topics[topic]) {
             return;
         }
 
-        var numSubscribers = q[topic].length;
-
-        while (numSubscribers) {
-            numSubscribers--;
-            q[topic].fn(topic, data);
+        var subscribers = topics[topic];
+        for (var i = 0, max = subscribers.length; i < max; ++i) {
+            subscribers[i].fn(topic, data);
         }
+        
     }
 
     function subscribe(topic, fn) {
+        
+        var token = ++uuid;
 
-        var token;
+        if (!topics[topic]) {
+            topics[topic] = [];
+        }
 
-        if (!q[topic]) {
-            q[topic] = [];
-        } 
-
-        token = (++uuid).toString();
-        q[topic].push({
-            token:  token,
-            fn:     fn,
+        topics[topic].push({
+            token: token,
+            fn: fn
         });
-
-        return token;
+        
+        return token; 
     }
 
     function unsubscribe(token) {
+        var i;
+        var topic;
 
-        var i, topic;
-        for (topic in q) {
-
-            if ( q.hasOwnProperty(topic) && q[topic] ) {
-                for (i = 0, max = q[topic].length; i < max; ++i) {
-                    if (q[topic][i].token === token) {
-                        q[topic].splice(i, 1);        
+        for (topic in topics) {
+            if (topics.hasOwnProperty[topic] && topics[topic]) {
+                for (i = 0, max = topics[topic].length; i < max; ++i) {
+                    if (topics[topic][i].token === token) {
+                        topics[topic][i].splice(i,1);
                         return token;
                     }
                 }
             }
-
-        } 
+        }
+        return token;
     }
 
-}());
+    return {
+        publish: publish,
+        subscribe: subscribe,
+        unsubscribe: unsubscribe
+    };
+}
+
+var pubSub = new PubSub();
