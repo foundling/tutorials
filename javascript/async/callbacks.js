@@ -1,5 +1,5 @@
 /*
- * Callbacks are functions passed into a function by name. Anywhere in the function, that callaback can be called.  
+ * Callbacks are functions passed into another function. Anywhere in the function, that callaback can be called. 
  *
  *
  */

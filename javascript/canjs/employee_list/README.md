@@ -6,8 +6,8 @@
 
 We're using a module loader instead of a series of script tags in our html because:
 
-- a module loader offers built-in module support which makes your app easier to organize, build and test in a modular fashion.  You don't have to wrap your modules in an [IIFE](https://en.wikipedia.org/wiki/Immediately-invoked_function_expression) to prevent them from polluting the global namespace. 
-- a non-trivial application will require dependencies that require other dependencies that require other dependencies ... and as the number of modules grow, the app's dependency relationships become increasingly precarious and difficult to maintain. The module loader takes care of all of this for you, so you can focus on building your app. So if the node module installation and Steal configuration seems overly complicated, take it slow and make sure you really understand what you're doing.  If you do that, it will be one-time cost that will work in your favor for the rest of your application life-cycle. 
+- A module loader offers built-in module support which makes your app easier to organize, build and test in a modular fashion.  You don't have to wrap your modules in an [IIFE](https://en.wikipedia.org/wiki/Immediately-invoked_function_expression) to keep them out of the global namespace. 
+- A non-trivial application will require dependencies that require other dependencies that require other dependencies. As the number of modules grow, the app's dependency relationships become increasingly precarious and difficult to maintain. The module loader takes care of all of this for you, so you can focus on building your app. So if the node module installation and Steal configuration seems overly complicated, take it slow and make sure you really understand what you're doing.  If you do that, it will be one-time cost that will work in your favor for the rest of your application life-cycle. 
 - The app can load faster because the dependency loading process is non-blocking 
 
 The Demo Application:
