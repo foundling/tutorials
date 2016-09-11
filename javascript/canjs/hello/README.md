@@ -9,7 +9,7 @@ The goal of this tutorial is to introduce the process of building a simple CanJS
 + using the `steal` build function in our JavaScript code
 + loading templates and live-binding data objects to them
 
-### Caveats
+### Limitations
 
 This tutorial takes place mostly on the command-line and (currently) has a Linux/BSD/Mac OS bias.
 
