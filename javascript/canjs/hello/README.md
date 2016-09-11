@@ -1,4 +1,4 @@
-# CanJS Series - Part 1: Building a basic  
+# CanJS Series - Part 1: Application Setup and Data Binding
 
 ### Goal
 
