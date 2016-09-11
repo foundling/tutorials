@@ -1,85 +1,118 @@
-<br>
-# CanJS Tutorial Part 1  
+# CanJS Series - Part 1: Building a basic  
 
-## Using StealJS to build a basic app
+### Goal
 
-<br>
+The goal of this tutorial is to introduce the process of building a simple CanJS page from scratch using the [StealJS](http://stealjs.com/) module loader. It will cover:
 
-### Goals
++ dependency installation
++ setting up our package.json file, which is crucial to using `steal.js`
++ using the `steal` build function in our JavaScript code
++ loading templates and live-binding data objects to them
 
-The goal of this tutorial is to introduce the process of building a simple CanJS page from scratch using the StealJS module loader. It will cover installing dependencies and setting up a `package.json` file with npm, using the `steal` build function, and binding data to a template and building behavior around that data with custom CanJS event attributes. We'll run the app on a local development server. 
+### Caveats
 
+This tutorial takes place mostly on the command-line and (currently) has a Linux/BSD/Mac OS bias.
 
-### Preface
+### Why is this tutorial using CanJS? 
+
+I started developing with CanJS because it was what a previous workplace used as their front-end JavaScript framework.  CanJS doesn't have the market share of Angular, React or Ember, but it has a steady user-base and is both fully-featured, fast and lightweight. And if you encounter an issue, the CanJS community, including the core contributors, are very quick to help.  But I decided to write this series because I felt, after enough frustration, that the world could use some additional CanJS resources from a different perspective. As it is right now, much of the documentation comes from Bitovi, whose docs, though extensive, are somewhat dispersed and occasionally confusing. This series attempts to start with tooling and basic `can`-isms and move toward a more complex, component-based application.
+
+With that said, here are some additional resources that you might find useful:
+
++ Bitovi's [YouTube channel](https://www.youtube.com/channel/UC_HPFLeKzJNLOUnLc_3311Q/videos)
++ The [Guides](https://canjs.com/guides/index.html)
++ The [API Documentation](https://canjs.com/docs/index.html)
++ The [Forums](http://forums.donejs.com/c/canjs) 
++ The CanJS [GitHub page](https://github.com/canjs/canjs) 
+
+### On Using a Module Loader
 
 Why are we using a module loader instead of script tags for our code?
 
-- **Organization**: Modules are beneficial for complex architectures because they allow you to write isolated units of code and inject them easily into different parts of your application. This affords you greater organization and testability. Before module loaders were available, it was a best practice for JavaScript developers to wrap a module in an [IIFE](https://en.wikipedia.org/wiki/Immediately-invoked_function_expression) to isolate it from the global namespace, giving it module-like functionality.
+- **Organization**: Modules are beneficial for complex architectures because they allow you to write isolated units of code and inject them easily into different parts of your application. This affords you greater organization and testability. Before module loaders were available, it was a best practice for JavaScript developers to wrap a module in an [IIFE](https://en.wikipedia.org/wiki/Immediately-invoked_function_expression) to isolate it from the global namespace, giving it module-like functionality. StealJS is one of many libraries that provide first-class module support in a JavaScript environment (StealJS can do a lot more than this, though).  
 
-- **Dependency management**: a complex application will require dependencies that require other dependencies that require other dependencies, etc. As the number of modules grow, the app's dependency relationships become increasingly difficult to maintain. A module loader will take care of the dependency tree for you, so you can focus on building your app instead of constantly having to re-order script tags. 
+- **Dependency Management**: a complex application will require dependencies that require other dependencies that require other dependencies, etc. As the number of modules grow, the app's dependency relationships become increasingly difficult to maintain. A module loader will take care of the dependency tree for you, so you can focus on building your app instead of constantly having to re-order script tags. 
 
 - **Speed**: In the case of StealJS, which is an asynchronous module loader, the app is able to start executing sooner because the module loading process is non-blocking, so modules can be loaded in 'parallel'. 
 
 ### The Demo Application
 
-In terms of functionality, the demo app will be very simple: it merely demonstrates how to use the `can-EVENT` attribute on an HTML element to manipulate it from your JavaScript code. Subsequent tutorials will explore the power of Can's data structures in more depth.
+In terms of functionality, the demo app will be very simple, merely demonstrating how to sync a view with an underlying data object. We will use CanJS's declarative event binding syntax to demonstrate that interactions with the view change the data model, which in turn syncs with the view.
 
- The emphasis here is much more on StealJS and the central role of the `package.json` file when building an app with StealJS. I'll also cover the asynchronous structure of the steal function as well as the syntax for importing various types of modules.
+The emphasis here is much more on StealJS and the central role of the `package.json` file when building an app with StealJS. I'll also cover the asynchronous structure of the steal function as well as the syntax for importing various types of modules.
 
-### App Setup 
+### Installing Node and npm
 
-Here is a tree view of what our folder structure will look like:
+If you don't have node on your platform, you can download it from the [NodeJS website](https://nodejs.org/en/download/). The platform-specific installations currently come with `npm`, so if you use one of those, there is no need to install `npm`.
+
+Make sure npm is upgraded to its latest version by running `npm install npm -g`.
+  
+## Installing Node Version Manager
+
+Node Version Manager (nvm) lets you switch between NodeJS versions without any hassle. Nvm isn't a hard requirement for this tutorial, but it will make using Node in the future a little easier. If you are running OS X or Linux, follow the installation instructions for nvm [here](https://github.com/creationix/nvm/blob/master/README.markdown). If you are running Windows, the previous link has some links to Windows-friendly nvm alternatives. Also, note that the `nvm` package installable through the `npm` command is not the correct package. 
+  
+### App Directory Structure 
+
+Here is what our folder structure will look like:
 
 ````
-/demo_app
-    index.html
-    package.json
-    node_modules
-    /app
+demo_app/
+    app/
         app.js
         app.stache
         app.less
+    index.html
+    node_modules/
+        # modules downloaded via 'npm install [module name]' command
+    package.json
 ````
 
 We will manually create everything except for the  `node_modules` directory and the `package.json` file.
 
-#### :: Install nvm and node 6.1 :: 
+#### Create our application directories and files
 
-`npm install nvm`
+Change to the directory where you want to put this application and run the following commands:
 
-`nvm install 6.1`
++ `mkdir -p demo_app/app`
++ `touch demo_app/{index.html,app/app{.stache,.js,.less,_test.js}}`
++ `tree demo_app` (to verify you have the right structure)
 
-`nvm use 6.1`
 
-`nvm current`
+#### Change directory into your application root, `demo_app`
 
-#### :: Create our application directories and files ::
+Type `cd demo_app` so you are now in the `demo_app` directory. If you run `pwd`, it should show you a filepath ending with 'demo_app'.
 
-`mkdir demo_app demo_app/app`
+#### Initialize your app as a package
 
-`touch demo_app/{index.html,app/app{.stache,.js,.less,_test.js}}`
-
-`cd demo_app && ls -aR`
-
-#### :: Initialize your app as a package :: 
-
-It's important to create a `package.json` file **before** you start installing node modules, and to use the --save and --save-dev flags, so that your installations are recorded in the `package.json` file. StealJS relies on this file to locate your application entry point and its node module dependencies. 
-
-We can create a `package.json` file with this command:
+Before you start installing modules, it's important to create a `package.json` file so our installations are automatically tracked. We can do that easily with this command:
 
 `npm init`
 
-Press `Enter` to accept each default, then type `yes` to accept them and write the `package.json` file to your application's root directory, which should be your current directory. 
+It will present you with a lot of options, none of which are important for this application. So, press `Enter` to accept each default, then type `yes` to accept them and write the `package.json` file to your application's root directory, which should be your current directory. 
 
-#### :: Install the essential project dependencies ::
+
+#### `npm install` commands explained
+
+Here are the commands we will use to install packages
+
++ `npm install [module]` (install module in our local `node_modules` folder)
++ `npm install [module] -g` (install module globally)
++ `npm install [module] --save` (install module and save it to our package.json as an application dependency)
++ `npm install [module] --save-dev` (install module and save it to our package.json as a developer dependency)
+
+A dependency is a module that the application must have in order to run.  A developer dependency is a module that isn't strictly necessary to run the app, but is useful development tool for building the app with (for example, testing tools like Mocha and Chai).
+
+#### Install the essential project dependencies
+
+Let's install `can` and `steal` as regular application dependencies:
 
 `npm install --save can steal`
 
-#### :: Install a global development server if you don't already have it ::  
+#### Install a global development server if you don't already have it  
 
 `npm install -g http-server`
 
-#### :: Setting up the `index.html` and the `app/app.js` files ::
+#### Setting up the `index.html` and the `app/app.js` files
 
 Open the `index.html` file and add or copy the following to it:
 
