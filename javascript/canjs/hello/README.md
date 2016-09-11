@@ -43,7 +43,7 @@ The emphasis here is much more on StealJS and the central role of the `package.j
 
 ### Installing Node and npm
 
-If you don't have node on your platform, you can download it from the [NodeJS website](https://nodejs.org/en/download/). The platform-specific installations currently come with `npm`, so if you use one of those, there is no need to install `npm`.
+If you don't have node on your platform, you can download it from the [NodeJS website](https://nodejs.org/en/download/). The platform-specific installations currently ship with `npm`, so if you use one of those, there is no need to install `npm`.
 
 Make sure npm is upgraded to its latest version by running `npm install npm -g`.
   
@@ -133,7 +133,7 @@ Notice the script tag at the end of the body tag.  This references the `steal.js
 
 Open the `package.json` file and set the `main` entrypoint (the default is `index.js`) to `app/app`. This indicates that the application entrypoint is `app.js` inside of the `app` directory. The `.js` extension isn't necessary.
 
-#### :: Testing that everything loads correctly ::
+#### Testing that everything loads correctly
 
 Run `http-server` from the root of your project directory, `demo_app`, and copy the `localhost` port location it outputs into your web-browser (StealJS needs a server to handle its request and won't load from the filesystem).  With no arguments, `http-server` should load at `localhost:8080`. If you need a different port, you can use the `-p` flag to specify an alternate.
 
