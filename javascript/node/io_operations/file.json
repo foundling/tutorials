@@ -1,0 +1,29 @@
+{
+    "taskLists": [
+        {
+            "title": "Camping Trip",
+            "backupTitle": "",
+            "tasks": [
+                {
+                    "text": "Buy a Tent.",
+                    "backupText": "",
+                    "complete": false
+                },
+                {
+                    "text": "Get a Map.",
+                    "backupText": "",
+                    "complete": false
+                },
+                {
+                    "text": "Get Gas.",
+                    "backupText": "",
+                    "complete": false
+                }
+            ],
+            "active": false
+        }
+    ],
+    "settings": {
+        "colorscheme": "default"
+    }
+}
