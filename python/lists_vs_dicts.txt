@@ -1,0 +1,55 @@
+Should I use a list or a dict?
+------------------------------
+
+First, both of these structures are key based. In a list, you are giving it an integer as a key, and the algorithm is: 'go n items into this thing and give me the value'. in a dict, it's more like, take this n, run it through a special and hopefully precise function to get an address in my hopefully precisely-sized array, and go to that address. At that address, there may be another data structure that requires traversing, but it's hopefully not very big.
+
+#This really needs a code/ pseudo-code example or something
+
+So, in an array, you have to deal with the whole thing. 
+
+In a dict, you are getting an interface on top of an array and more, an interface that accomodates the human intuition of going from name to value. But technically, you are using a key as input to a function that outputs an array index, and then you're going to that index in the dict's underlying structure. This can greatly reduce the average search space if the array indexes produced by the function, plus the size of the array, result in a balanced distribution of keys to value locations.  if , so instead of going through the whole list looking for Shakespeare, you give it 'Shakespeare', it runs that through a function, gets an index, goes to the index.
+
+Think about how you want to access your data, and the answer will probably make things more clear to you. Do you want to have to remember what attribute that 4th field of an array has? Or would you rather look up a fact that you don't need to remember, its property? 
+
+Does order matter? Use a list.
+
+Do names matter? Use a dict.
+Can I use both lists and dicts in one object? Yes!
+
+Examples:
+
+# The 'x,y' convention is strong enough that this makes sense as a list of magnitudes
+# without too much clarification. 
+
+position = [0, 1]
+
+# although, to be honest, this works, too:
+
+position = {
+    'x': 0,
+    'y': 1
+}
+
+
+## With a catalogue of authors, however, it doesn't make as much sense to keep them in a list. Look at this:
+
+authors = [ 
+    [ 'Shakespeare, William', 1564, England, 'M' ],
+    [ 'Steele, Diane', 1947, USA', 'F']
+    # ...
+]
+
+# for the following reasons: 
+# 1) we have taken on the task of ensuring they stay in order.
+# 2) the order of the fields may not be dictated by any particular convention, it's arbitrary.
+
+# A dict could make this situation better:
+
+authors = {
+    'Shakespeare': [
+        {
+            first: 'William',
+            last: 'Shakespeare',
+        }
+    ]
+}

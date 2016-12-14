@@ -1,0 +1,294 @@
+<DOCTYPE! html>
+<html lang="en">
+<head>
+
+  <meta charset="UTF-8">
+  <link rel='stylesheet' type='text/css' href='style.css'></link>
+  <link href='http://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=PT+Serif' rel='stylesheet' type='text/css'>
+  <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+  <script src="hilitor.js"></script>
+
+</head>
+<body>
+<!-- see http://jsfiddle.net/cUCvY/1/ to get header and form to stack mobile-->
+  <div id="wrapper">
+    <div id="top-anchor">
+			<div id="title">
+				<h1>NMR New User Linux Tutorial</h1>
+    	</div>	
+		<form id="search-bar">
+    		<input type="text" id="input"></input>
+    		<input type="submit" value="Search" id="search-button"></input>
+				<p id="search-results"></p>
+    	</form>
+
+  </div>
+
+  <br>
+
+  <div id="table-of-contents">
+    <h2 id="toc">Table of Contents</h2>
+      <ul>
+        <li><a href='#purpose'>Why This Tutorial?</a></li>
+	<li><a href='#unixfs'>The Linux File System</a></li>
+        <li><a href='#command-line'>The Command Line</a></li>
+	<li><a href="#redirection-pipes">Redirection and Pipes</a></li>
+        <li><a href='#shell-config'>Shell Config Files</a></li>
+        <li><a href='#env-vars'>Environment Variables</a></li>
+        <li><a href='#text-editors'>Text Editors</a></li>
+        <li><a href='#aliasing'>Aliasing</a></li>
+        <li><a href='#manual'>(How To) Read The Manual</a></li>
+        <li><a href='#sys-info'>Getting System Information</a></li>
+        <li><a href='#searching'>Searching for Things</a></li>
+        <li><a href='#filters'>Filters</a></li>
+        <li><a href='#permissions'>File Permissions</a></li>
+        <li><a href='#remote'>remote utilities</a></li>
+        <li><a href='#zip'>compressing data</a></li>
+        <li><a href='#nmr-comp'>the NMR computing environment</a></li>
+        <li><a href='#tips'>useful linux tips</a></li>
+        <li><a href='#links'>links / resources</a></li>
+      </ul>
+  </div>	
+
+  <h2 id="purpose">Why this tutorial?</h2><a href="#toc" class="toc"> (top)</a>
+  <p>If you're a new user here, the technical landscape may seem a little overwhelming, especially if you're not familiar with Linux.  This tutorial is meant to get you up to speed so that you can 1) become more self-sufficient and 2) ask for help more efficiently. It will cover 
+    <ul>
+      <li>Command-line fundamentals and best practices</li>
+      <li>How to check the status of various aspects of your system</li>
+      <li>How to access files on another NMR Linux machine</li>
+      <li>NMR-specific information relating to computation and data storage</li>
+    </ul>
+
+<p>I encourage you to make use of the 
+   <a href="#toc">Table of Contents</a> 
+   and the Search Bar to locate the information you need. The search bar highlights results in yellow.  
+   Anything highlighted in blue is my own emphasis.</p> 
+
+  <h2 id="unixfs">The Linux File System</h2><a href="#toc" class="toc"> (top)</a>	
+  <p>The Linux filesystem has its roots in the UNIX filesystem which grouped a system's files and directories into a single tree. <span> We generally refer to the 'root' directory as being at the 'top' and everything that it contains as being 'below' the root</span>.  With the exception of the root directory, any given directory is contained with another directory that is closer to the root.  This is called the 'parent' directory.  Any directory within a given current directory is called a 'child' directory, or a 'sub-directory'. It is worth noting that in contrast to an operating system like Windows, when you add a storage device like an additional hard drive or an external USB drive to a Linux system, that drive is grafted onto the filesystem at a particular directory.  We tend to mount drives at /local_mount/space/[hostname] on NMR Linux systems.  However, a USB drive might auto-mount at /media/.</p>
+
+<p>Here is a simplified diagram of a Linux filesystem tree:</p>  
+  <img id="linuxfs" src="linuxfs.png"></img><br><br>
+
+  <p>My 'docs' directory is inside the /alexr directory, which is inside the /homes directory, which is inside the / (root) directory.  The full path of my 'docs' directory would be <span>/homes/alexr/docs</span>.</p>
+  <p>CentOS adheres to the Filesystem Hierarchy Standard (FHS) which aims to encourage uniformity across Unix-like systems for the convenience of users, developers, system administrators, etc.  Here is a filtered list of filesystems you will find on your CentOS box with an accompanying description of their purposes: </p>
+
+  <ul id="linux-filesystems">
+   <li><span>/bin:</span> essential command binaries (for everyone).  </li>
+   <li><span>/boot:</span> static files used by the boot loader, which loads the Operating System into memory.  </li>
+   <li><span>/dev:</span> device files (your root partition might be on /dev/sda1 or /dev/sda2).  </li>
+   <li><span>/etc:</span> host-specific files</li>
+   <li><span>/home:</span> where user home directories are traditionally kept. <br>Note: at the Martinos Center, users' home directories are managed centrally and mounted as a network directory at <span>/homes</span> </li>
+   <li><span>/sbin:</span> system binaries.  </li>
+   <li><span>/media:</span> mount point for removable media.  </li>
+   <li><span>/tmp:</span> for temporary files  </li>
+  </ul>
+  
+  
+
+	
+  <h2 id="command-line">The Command Line</h2><a href="#toc" class="toc"> (top)</a>
+  <p> A command line shell is your interface to a system's lower-level functions that are essential to getting anything done in Linux. You execute these by entering a command and one or more arguments (e.g. 'touch myfile.txt') at the shell prompt and hitting Enter.  The system then uses this to execute a program that does what you want but in the language of the OS (Unix and Linux were written in C). There are a variety of Linux shells available today.  The most common shells used in the NMR environment are <b>tcsh</b> and <b>bash</b>. If you are a scientist, you may find yourself using tcsh. The commands demonstrated will hopefully both be shell-agnostic and useful to you.</p>
+
+  
+  <h2>First Shell Commands</h2><a href="#toc" class="toc"> (top)</a>
+  <p>The general form for Linux commands is expressed below.  Anything in brackets is optional.</p>
+  <p><span>command [flag] [options] [arguments]</span></p>  
+  <p>Here is a list of common shell commands you'll need to know to get started </p>
+  <ul>
+	<li>pwd</li>
+	<li>cd</li>
+    <li>ls</li>
+	<li>file</li>
+	<li>less</li>
+    <li>cat,tac</li>
+    <li>echo</li>
+    <li>touch</li>
+    <li>rmdir</li>
+	<li>mv</li>
+    <li>rm</li>
+  </ul>
+  <p>Let's go through these commands one-by-one, trying out some variations and flags:
+  </p>
+   <div class="terminal">
+<pre>
+gate:~$ 
+ </pre>    
+  </div>
+	<p>
+		The prompt above is what I see as soon as I'm logged into gate.nmr.mgh.harvard.edu. The default prompt indicates three things: 
+	<ul>
+		<li>I'm on the server 'gate'</li>
+		<li>I'm in the '~' directory</li>
+		<li>I am a 'standard' user (were I the root/super user, we would see, among other differences, '#' instead of '$')</li>  
+	</ul>
+	</p>
+	<br>
+   <div class="terminal">
+<pre>
+gate:~$ pwd
+/homes/2/alexr
+ </pre>    
+</div>
+<p>
+When I run 'pwd', we can see now that '~' is shorthand for my home directory, /homes/2/alexr.
+</p>
+<br>
+   <div class="terminal">
+<pre>
+gate:~$ cd ~
+gate:~$ pwd
+/homes/2/alexr
+
+gate:~$ cd /homes/2/alexr
+gate:~$ pwd
+/homes/2/alexr
+
+gate:~$ cd
+gate:~$ pwd
+/homes/2/alexr
+
+gate:~$ cd $HOME
+gate:~$ pwd
+/homes/2/alexr
+ </pre>
+ </div>
+<p>
+The above demonstrates that you can 'cd' to your home directory in a variety of ways: 
+<ul>
+  <li>by giving cd '~' as an argument ('~' is a shorcut for your home directory)</li>
+  <li>by giving cd the full path of your home directory as an argument</li>
+  <li>by giving cd no argument at all </li>
+  <li>by giving cd my $HOME environment variable (see <a href="#environment-variables">environment variables</a>)</li>
+</ul>
+</p>
+<br>
+  <div class="terminal">
+   <pre>
+gate:~$ ls
+myfile.txt    stuff    Pictures    docs/
+ </pre>
+ </div>
+<p>This is a basic invocation of 'ls'.  It's useful if you want to quickly see if a file exists in the currernt directory, but that's about it. Let's try something a little more sophisticated.</p>
+  <div class="terminal">
+<pre>
+gate:~$ ls -lR
+.:
+total 4
+drwxrwx---  2 alexr alexr   102 May  5 15:14  docs/
+-rwxrwx--- 1 alexr alexr   4    Apr 30  16:11  myfile.txt
+drwxrwx--- 2 alexr alexr   68   May  2  12:31  Pictures
+-rwxrwx--- 1 alexr alexr   5    Apr 30  17:21  stuff
+
+./docs:
+total 4
+-rw-rw-r-- 1 alexr alexr 15 May  5 15:14 backup_log.txt
+gate:~$
+
+ </pre>
+ </div>
+<p>Here I'm using 'ls' with the '-l' (long format) and '-R' (recursive) flags. I'm not specifying a file/directory, so 'ls' defaults to the current directory. This will show me everything that the current directory contains, in the most detail possible. Recursion (note the capital R, different from the lowercase r flag) moves 'down' the filesystem from the given directory, listing files in each directory until all the files are listed and there are no more directories to traverse. </p>
+  <div class="terminal">
+<pre>
+gate:~$ ls -lr
+drwxrwx--- 2 alexr alexr   102  May  5  15:14  docs/
+drwxrwx--- 2 alexr alexr   68   May  2  12:31  Pictures
+-rwxrwx--- 1 alexr alexr   5    Apr 30  17:21  stuff
+-rwxrwx--- 1 alexr alexr   4    Apr 30  16:11  myfile.txt
+ </pre>
+ </div>
+<p></p>
+  <div class="terminal">
+<pre>
+gate:~$ ls -a
+.    ..    myfile.txt    stuff    Pictures    docs
+ </pre>
+ </div>
+<p></p>
+
+  <div class="terminal">
+<pre>
+gate:~$ ls -al
+drwxrwxr-x  4 alexr alexr  4096 Apr 29 13:15  .
+drwxr-x--- 85 alexr alexr 12288 Apr 29 13:11  ..
+-rwxrwx---  1 alexr alexr     4 Apr 30 16:11  myfile.txt
+-rwxrwx---  1 alexr alexr     5 Apr 30 17:21  stuff
+drwxrwx---  2 alexr alexr    68 May  2 12:31  Pictures
+drwxrwx---  2 alexr alexr   102 May  5 15:14  docs/
+     </pre>
+ </div>
+<p></p>
+
+  <div class="terminal">	
+<pre>
+gate:~$ cd docs/
+gate:docs$ ls
+-rwxrwx--- 2 alexr alexr 226388	May 5 15:14 mtg_notes
+-rwxrwx--- 2 alexr alexr 172    May 5 15:14 thesisV4.pdf
+  </pre>
+  </div>
+  
+  <div class="terminal">	
+  <pre>
+gate:~$ cd ~ && ls
+-rwxrwx--- 2 alexr alexr  226388 May 5 15:14 mtg_notes
+-rwxrwx--- 2 alexr alexr  172    May 5 15:14 thesisV4.pdf
+  </pre>
+</div>
+  
+  <div class="terminal">
+  <pre>
+
+
+  </pre>
+  </div>
+
+  <h2 id="redirection-pipes">Redirection and Pipes</h2><a href="#toc" class="toc"> (top)</a>
+  <p>Now that we know something about common shell commands, we can chain them together to do more complex and useful work.  I would be negligent if I didn't mention that this is a core aspect of the Unix design: small, modular and focused utilities that a user can use to transform text-based data in a highly customizable way.  This works because a large majority of these utilities are able to read data from other programs and output of data for other programs to act upon. </p>
+
+<p>A Linux shell has 3 standard streams that are manipulable by the user: one for input given to the shell, one for output from the shell, and a third for data dedicated to reporting errors.  These are called stdin, stdout and stderr, respectively. When you are typing a command at the command prompt, they keyboard is the stdin device that provides the input stream data.  What you see on the screen is the stdout result  </p>
+   
+
+
+  <h2 id="text-editors">Text Editors</h2><a href="#toc" class="toc"> (top)</a>
+  <p>It is good idea to get used to working in a text-based editor if you want to both edit and administer files in a Linux terminal. Below, I've listed a few commonly used text editors that happen to be installed on our NMR Linux systems by default.  The name of each text editor is also a link to a relatively short YouTube instructional video to get you started, as text editing is somewhat out of the scope of this tutorial.</p> 
+  <ul>
+    <li><a href="https://www.youtube.com/watch?v=45KO4KO2DTo">nano</a> (easy to use, intuitive menus)</li>
+    <li>emacs (powerful but has a steeper learning curve than nano)</li>
+    <li><a href="https://www.youtube.com/watch?v=SI8TeVMX8pk">vi/vim</a> (also powerful, arguably has the steepest learning curve of the three)</li>
+  </ul>
+
+  <h2 id="sysinfo">Getting Information About Your System</h2><a href="#toc" class="toc"> (top)</a>
+  <p>The following are commands that you may find useful when trying to troubleshoot your system:</p>
+    <ul>
+      <li><span>uptime:</span> System time, how long the system has been running since the last reboot, how many
+      users are currently logged in, and some basic CPU load statistics.  <br>e.g.<code> '15:44:49 up 12 days, 6
+      min,  8 users,  load average: 0.11, 0.14, 0.13'</code> </li>
+      <li><span>w:</span> Who is logged in, since when, and what they are running.  The TTY and FROM fields are   	also useful for determining if they are logged on at the machine itself or via a remote session.  
+        <ul>
+          <li>FROM :0 ---> graphical login</li>
+          <li>FROM :0.0 ---> terminal within graphical login, aka vterm</li>
+          <li>FROM :1001 ---> an NX login</li>
+          <li>FROM :1,:2, or :3 ---> a VNC login</li>
+        </ul> 
+      </li>
+      <li><span>top:</span> CPU load of the various tasks running on the system (among a lot of other information).  To see the memory usage of a single user's tasks, run top -u [username] </li>
+      <li><span>ifconfig:</span> gives you network information on all of your network devices if no arguments are given.  You can run 'ifconfig eth0' (eth0 is a common primary network device) to see information pertaining only to that device.  <br><b>Note:</b> the 'inet addr' value is your IP address, and the 'HWaddr' value is your Hardware/MAC Address.</li>    
+     <li><span>whoami:</span> Tells you who you are.  </li>
+     <li><span>hostname:</span> your hostname.</li>
+     <li><span>ping:</span> attempts to get an ICMP response from a networked host (e.g. 'ping gate').
+  </ul>
+
+  <h2 id="nmrenvironment">The NMR Computing Environment</h2><a href="#toc" class="toc"> (top)</a>
+  <p>The NMR computing environment consists of a network of workstations and servers located in Charlestown Navy Yard and on MGH's main campus.  The exception is our storage cluster ( /cluster ), which is located in a data center in Needham, MA. </p> 
+  
+
+  <div id="bottom-spacer"></div>
+  <p id="credits">[ written by Alex Ramsdell at the Martinos Center Help Desk in 2014 ]</p>
+  </div>
+
+<script src="myHilitor.js"></script>
+</body>
+</html>
