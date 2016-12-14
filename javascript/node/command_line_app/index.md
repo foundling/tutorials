@@ -38,35 +38,87 @@ It took me all of 5 seconds to find out that TJ Holowaychuck, author of Express,
 
 Now, after you google "node.js command line app" and see maybe ... [commander](htts://github.com/tj/commander.js) ... you go looking for it. Then you may have what I consider a characteristically Node.js experience. Go to the GithHb, 6 commits, okay. Not many files either, but a pretty clean API. Is anyone here? You walk through an empty room, your well-heeled shoes making dark clacks in the dark space, and then you get to issues page: yes! People are here. Is this too good to be true ? (a few months pass ... ) no, it is the real thing. 
 
-All that to say that commander is good. I appreciate its simplicity and transparency and find it enjoyable to use. But I couldn't really figure out how to best avoid loading everything for every command.
+All that to say that commander is good. I appreciate its simplicity and transparency and find it enjoyable to use. But I couldn't really figure out how to best avoid loading everything for every command within the paradigm of this library.
 
 This was my explicit hypothesis, that the dependencies were slowing everything down.
 
 # I'll Explain the Problem in More Detail
 
-So the problem starts when you require your libraries and define your command callbacks and secondary functions all in one file. You want to keep it simple and clean in a single file like TJ, but in thinking this, you conflate the aims of a library's documentation with those of the library user. 
+So you, with modularity in mind, start writing this with an index file that tries to deal just with commander, requiring modules that do the actual work and passing them to the commander callback registration functions.  But the `require(module)` statement will pull in that module whether the user runs the command or not. Each module is being loaded upfront as part of the standard execution. Here's a code example:
 
-# Step One
+````
 
-Divide the code into modules that corresond to the command paths, `run`, `update`, etc ... The simplest thing is to export a top level function from each module.
+const cli = require('commander');
+const { stats, run, query, health, update } = require('./commands');
 
-# Step Two
+cli
+    .command('stats')
+    .description('gives you stats.')
+    .action(stats);
 
-Add an `index.js` file that imports `commander` and the command functions you just created. Register each function with the commander application.
+cli
+    .command('run')
+    .description('runs the app')
+    .action(run);
 
-# Step Three
+...
 
-Call the 
+cli.parse(process.argv);
 
-+ in your main script you import the `commander` library and start registering commands and options on the object like `.command(doX)` and `.option(doY)`.
+````
 
-on the imported object as callbacks. Then you call 
+# How to Load the Libraries You Need and No More
 
-# Don't Load Libraries That You Don't Need
+Since the paths are mutually exclusive, one is naturally going to try to load on the modules that are needed. How can we gain more control over the time that `require` is executed?
 
-Since the paths are mutually exclusive, it is possible that by not loading everything on very invocation . Each command was bearing the dependency loading cost of the entire app.
-
-# How to Load Dependencies On Demand in Node
+Require is synchronous, meaning it occurs with that guarantee that if you add `4 + require('5.js')` and `5.js` exports 5, you will have 9 because Node will wait for the require call to finish before moving on. So you can thus put require in another function and call that function at a later time. Since `commander` takes a callback as functions to run for a given sub-command, we should register a function with each command callback that returns a function which requires the necessary dependencies. That is a little hard to visualize maybe so here's some code: 
 
 
+````
+
+const cli = require('commander');
+
+/* New from Here Down */
+
+const basepath = __dirname + '/commands';
+const makeLoader = function(name) {
+
+    return function() {
+
+        require(`${basepath}/${name}`).apply(this, arguments);
+
+    };
+
+};
+
+const loaders = [
+
+    'stats', 'run', 'query', 'health', 'update'
+
+]
+.reduce((o, dep) => {
+
+   o[dep] = makeLoader(o);
+
+}, {});
+
+{ stats, run, query, health, update } = loaders; 
+
+/* New from Here Up */
+
+cli
+    .command('stats')
+    .description('gives you stats.')
+    .action(stats);
+
+cli
+    .command('run')
+    .description('runs the app')
+    .action(run);
+
+...
+
+cli.parse(process.argv);
+
+````
 

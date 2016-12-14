@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "A command-line app demo.",
   "main": "index.js",
-  "dependencies": {},
+  "dependencies": {
+    "commander": "^2.9.0"
+  },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
