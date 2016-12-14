@@ -1,6 +1,6 @@
-# Command-Line Applications in Node.js
+# Controlling Dependency Loading in Node.js Command-Line Applications
 
-Today, I decided that the command-line app I'm building is too slow to load.  It looks like this when you're using it:
+Recently, I've been building a command-line application for managing and getting information about a neuroscience study.  Today I decided that it's too slow to load.
  
 ````
 app sub-command [ arguments ... ] [ options ... ]
@@ -10,41 +10,31 @@ app sub-command [ arguments ... ] [ options ... ]
 e.g.
 
 
-````
+````bash
 npm install commander
-
 ````
 
-With this structure, sub-commands like `install` are the actions that a user would most probably want to take. This is what my cli app looks like: 
+Sub-commands are the items of interest, but otherwise there's nothing that complicated going on from an interface standpoint. The app exposes exactly five, mutually-exclusive sub-commands:
 
+````bash
+app stats                       # hits an slqite3 database
+app run                         # starts web server, opens Google Chrome, hits a database
+app show <project metric>       # hits a database, outputs colored text
+app query <name> <date-range>   # launches an API client, hits a database, makes a round of requests
+app update                      # does a git pull from the master branch on the remote repo
 ````
-app stats
-app run
-app health
-app query <name> <date-range>
-app update
 
-````
+## Enter Commander.js 
 
-`stats` provides an overall synopsis. `run` starts a local web-server to facilitate an OAuth2 process, and opens a webpage to the address of its index page. `health` reports the vital statistics, like database table-counts, row-counts, date of last API acquisition. `query` acquires project data, and `update` updates the command-line application itself.
+It took me all of 5 seconds to find `commander.js`. Commander is a nice, small and simple command-line application written by TJ Holowaychuk that exudes transparent feels and a great API. I recommend it.
 
-By the way, I'm being intentionally opaque about a lot of the details of my actual app because they don't matter. I hope that you conceive of it as just 5 related commands that help a user in some discrete aspect of their work. Furthermore, the app is fundamentally very simple: 5 entirely mutually-exclusive paths. That's not very complex, it's just a lot of work.
+## Getting Started
 
-## Find a Nice Parsing Library 
+With modularity in mind, I broke the functionality into atomic units, assembled them into 5 top-level modules (really just standard non-constructor functions), and used the cli index.js file to simply register them as callbacks to the appropriate sub-command and kick off the parser. 
 
-When I started building this, I thought like I usually do at first: "Oh, I don't need a parsing library, it's just a few things". But someone's paying me for prompt and functional software. I need to be paying attention to critical stuff like accuracy, reliability and upgradeability. So I had to find a parsing library.
+But I found that when running the app for the first time on a given day, the start up time was about 8 seconds! Subsequent proximal invocations of the command finish on the order of 300 to 400 milliseconds due to the OS cache. But for a user who is coming in and running this app for the first time in a given day, 8 seconds of start up time is unacceptable.
 
-It took me all of 5 seconds to find out that TJ Holowaychuck, author of Express, has a Node library [commander](https://github.com/tj/commander.js). Knowing that TJ wrote Express, I figured this wouldn't be too difficult to pickup.  He writes nice APIs.
-
-Now, after you google "node.js command line app" and see maybe ... [commander](htts://github.com/tj/commander.js) ... you go looking for it. Then you may have what I consider a characteristically Node.js experience. Go to the GithHb, 6 commits, okay. Not many files either, but a pretty clean API. Is anyone here? You walk through an empty room, your well-heeled shoes making dark clacks in the dark space, and then you get to issues page: yes! People are here. Is this too good to be true ? (a few months pass ... ) no, it is the real thing. 
-
-All that to say that commander is good. I appreciate its simplicity and transparency and find it enjoyable to use. But I couldn't really figure out how to best avoid loading everything for every command within the paradigm of this library.
-
-This was my explicit hypothesis, that the dependencies were slowing everything down.
-
-# I'll Explain the Problem in More Detail
-
-So you, with modularity in mind, start writing this with an index file that tries to deal just with commander, requiring modules that do the actual work and passing them to the commander callback registration functions.  But the `require(module)` statement will pull in that module whether the user runs the command or not. Each module is being loaded upfront as part of the standard execution. Here's a code example:
+Before I get into how to fix this, here's a sample of my index.js file. 
 
 ````
 
@@ -61,50 +51,110 @@ cli
     .description('runs the app')
     .action(run);
 
-...
+cli
+    .command('query')
+    .description('queries the API')
+    .action(query);
+
+cli
+    .command('health')
+    .description('checks the health of various things')
+    .action(health);
+
+cli
+    .command('update')
+    .description('updates the app')
+    .action(update);
 
 cli.parse(process.argv);
 
 ````
 
-# How to Load the Libraries You Need and No More
+## How to Load the Libraries You Need and No More
 
-Since the paths are mutually exclusive, one is naturally going to try to load on the modules that are needed. How can we gain more control over the time that `require` is executed?
+So we want to control when we load our dependencies.  At the very least, this can be achieved by putting our require call inside of a function. 
 
-Require is synchronous, meaning it occurs with that guarantee that if you add `4 + require('5.js')` and `5.js` exports 5, you will have 9 because Node will wait for the require call to finish before moving on. So you can thus put require in another function and call that function at a later time. Since `commander` takes a callback as functions to run for a given sub-command, we should register a function with each command callback that returns a function which requires the necessary dependencies. That is a little hard to visualize maybe so here's some code: 
+````
+function requireDep() {
 
+    require(dep);
+
+}
+````
+
+And we can pass this to commander's `.command` registration:
+
+````
+cli
+    .command('stats')
+    .description('gets stats')
+    .command(delayedRequire);
 
 ````
 
+
+Well ... not exactly.  Commander is going to pass the parsed arguments to the function registered by `.command`. So our `delayedRequire` function should do something with these arguments. Lets try that out.
+
+````
+
+function requireStats(...args) {
+    
+    // require returns the sub-command function
+    // and we call the functions .apply method on the original arguments.
+
+    require('./commands/stats').apply(this, args);
+
+}
+
+````
+
+
+If you've never used the `.apply` method of a JavaScript function, it offers finer-grained control over how a function is called. In this case, you first specify the context for the invocation and you second specify an array of arguments (supplied from `delayedRequire` function in this case).
+
+At this point, we might be tempted to start using our function. It requires the dependency only when we get around to calling it, it passes the cli-parsed arguments to the required module function. But it feels a little too boilerplate-y to register essentially the same function expression with the hardcoded dependency name in each `.command` call.   
+
+So let's make a function that 1) takes in a dependency name and 2) returns a function that takes in the command-line arguments from `commander`, requires the dependency and applies function #2's arguments to the resulting function of the require call.  
+
+````
+function makeLoader(dependencyName) {
+
+    return function(...args) {
+        require(dependencyName).apply(this, args);
+    }
+
+}
+
+````
+
+And now we can pass the dependency name to this function and be done with it. So here's what I came up with (including a few additional variations):
+
+
+````
 const cli = require('commander');
-
-/* New from Here Down */
-
-const basepath = __dirname + '/commands';
+const basepath = './commands';
 const makeLoader = function(name) {
 
-    return function() {
+    return function(...args) {
 
-        require(`${basepath}/${name}`).apply(this, arguments);
+        require(`${basepath}/${name}`).apply(this, args);
 
     };
 
 };
 
-const loaders = [
+const callbacks = [
 
     'stats', 'run', 'query', 'health', 'update'
 
 ]
 .reduce((o, dep) => {
 
-   o[dep] = makeLoader(o);
+   o[dep] = makeLoader(dep);
+   return o;
 
 }, {});
 
-{ stats, run, query, health, update } = loaders; 
-
-/* New from Here Up */
+{ stats, run, query, health, update } = callbacks; 
 
 cli
     .command('stats')
@@ -116,7 +166,21 @@ cli
     .description('runs the app')
     .action(run);
 
-...
+cli
+    .command('query')
+    .description('queries the API')
+    .action(query);
+
+cli
+    .command('health')
+    .description('checks the health of various things')
+    .action(health);
+
+cli
+    .command('update')
+    .description('updates the app')
+    .action(update);
+
 
 cli.parse(process.argv);
 
