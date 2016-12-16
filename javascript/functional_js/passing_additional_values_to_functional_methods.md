@@ -32,7 +32,7 @@ Well, I'd argue it's not, for three reasons:
 
 So let's make `hasX` a truly great, capable, adaptable citizen in your code.
 
-We'll keep the idea of closure, but greatly reduce the lexical distance between the value closed over and the closing over function by composing two functions that work together to filter out filenames that don't have `X`. This new version of `hasX` should accept an argument, the `X` and return another function that accepts another argument, the filename. One function returning another. Two functions working together hand-in-hand. Things have never looked so great.
+We'll keep the idea of closure, but greatly reduce the lexical distance between the value closed over and the closing over function by composing two functions that work together to filter out filenames that don't have `X`. This new version of `hasX` should accept an argument, the `X`, and return another function that accepts another argument, the filename. From the inner function, which is executed strictly after the outer function, we will by then have both values we need in order to check whether a datum has the property we're looking for. One function returning another. Two functions working together hand-in-hand. Things have never looked so great.
 
 ````
 const hasX = (thing) => {
