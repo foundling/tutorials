@@ -10,11 +10,11 @@ dataset
 
 ````
 
-But in a lot of practical cases, the criteria for transformation of a given data set isn't so cut-and-dry. Let's take `hasX` for example. What if this `X` that a given datum could have is something dynamic like a parameter passed in from another context? We'd love to pass that into filter's callback but that callback only accepts a single item from the dataset at any one time and isn't something we have that sort of control over anyway. 
+But in a lot of practical cases, the criteria for transformation of a given data set isn't so cut-and-dry. Let's take `hasX` for example. What if this `X` that a given datum could have is something dynamic like a parameter passed in from an outer context? We'd love to pass that into filter's callback but that callback only accepts a single item from the dataset at any one time and isn't something we have that sort of control over anyway. 
 
 What are we to do? 
 
-Well, we can always refer to that date or parameter from within the `hasX` function definition if we want to keep that variable in an outer scope. Here's a potential definition of `hasX` using that idea:
+Well, we can always refer to that extra parameter from within the `hasX` function definition if we want to keep that variable in an outer scope. Here's a potential definition of `hasX` using that idea:
 
 ````
 const thing = 'init';
