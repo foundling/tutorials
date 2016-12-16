@@ -26,11 +26,11 @@ Well, I'd argue it's not, for three reasons:
 
 + Legibility: As it stands, the only thing that's clear where `thing` comes from is ... not here.
 + Portability: As it stands, `hasX` is like your good but difficult friend `Y`.  You can't just take him *anywhere* because he's always going on about something that no one has any idea about.
-+ Testability: I'd like to drop `hasX` off at my test suite, but the value to which `thing` refers is lexically scoped, so their ability to get at it over at the test suite is totally thwarted.
++ Testability: I'd like to drop `hasX` off at my test suite, but the value to which `thing` refers is lexically scoped, so the value is *there* but inaccessible.
 
 So let's make `hasX` a truly great, capable, adaptable citizen in your code.
 
-We'll keep the idea of closure, re-writing the function so it can exist as a self-contained unit. This new version should accept an argument and return another function that accepts another argument. One function returning another. Two functions working together hand-in-hand.
+We'll keep the idea of closure, but greatly reduce the lexical distance between the value closed over and the closing over function by composing two functions that work together to filter out filenames that don't have `X`. This new version of `hasX` should accept an argument, the `X` and return another function that accepts another argument, the filename. One function returning another. Two functions working together hand-in-hand. Things have never looked so great.
 
 ````
 const hasX = (thing) => {
@@ -51,7 +51,7 @@ dataset
 
 ````
 
-And why don't we, in good aesthetic taste, just name the function `hasA`:
+That is clean AF! And why don't we, in good aesthetic taste, just name the function `hasA`:
 
 ````
 const hasA = (thing) => {
@@ -70,12 +70,14 @@ dataset
 And to please all of those bootcamp graduates with English degrees like me, let's make an `hasAn` alias:
 
 ````
-const hasAn = (thing) => {
+const hasA = (thing) => {
    
     return (datum) => {
         return datum.includes(thing);
     }
 };
+
+const hasAn = hasA;
 
 dataset
     .filter(hasAn(E))
@@ -83,5 +85,4 @@ dataset
     .some(isZ);
 ````
 
-And there you have it.  Functional methods with callbacks which accept additional parameters!
-
+Okay, that last one wasn't serious. But there you have it!  Functional methods callbacks taht accept additional parameters!
